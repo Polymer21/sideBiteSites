@@ -670,6 +670,42 @@ h3 {
   flex-direction: column;
 }
 
+/* The tag is nowrap, so a side-by-side row under ~600px leaves the copy a few pixels wide. */
+@media (max-width: 600px) {
+  .note {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .note > .pill {
+    align-self: flex-start;
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .note > div {
+    width: 100%;
+  }
+
+  .price-teaser .note {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+  }
+
+  .price-teaser .note > .pill {
+    flex: 0 1 42%;
+    max-width: 42%;
+    min-width: 0;
+  }
+
+  .price-teaser .note > div {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 50vw;
+  }
+}
+
 .price-teaser {
   display: flex;
   flex-direction: column;

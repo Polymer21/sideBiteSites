@@ -129,7 +129,7 @@ test("built routes exist", async () => {
   assert.match(pricing, /5 change rounds/);
 });
 
-test("built pages do not scroll horizontally", async () => {
+test("built pages do not scroll horizontally, and note text stays half the viewport at 390", async () => {
   const { chromium } = await import("playwright");
   const dist = path.join(root, "dist");
   const types = {
@@ -180,6 +180,18 @@ test("built pages do not scroll horizontally", async () => {
         assert.equal(response?.status(), 200, route);
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
         assert.ok(overflow <= 1, `${route} at ${width}px overflows by ${overflow}px`);
+        if (width === 390) {
+          const narrow = await page.evaluate(() => {
+            const floor = window.innerWidth * 0.5;
+            return [...document.querySelectorAll(".note > div")].flatMap((el) => {
+              const column = el.getBoundingClientRect().width;
+              if (column + 0.5 >= floor) return [];
+              const label = (el.innerText || "").replace(/\s+/g, " ").trim().slice(0, 48);
+              return [`${label} (${Math.round(column)}px)`];
+            });
+          });
+          assert.deepEqual(narrow, [], `${route} note text is under half the viewport: ${narrow.join("; ")}`);
+        }
       }
       await page.close();
     }
