@@ -1,0 +1,17 @@
+---
+interface Props {
+  title?: string;
+  body: string;
+  stacked?: boolean;
+}
+const { title, body, stacked = false } = Astro.props;
+import { provisional } from "../content/provisional";
+---
+
+<aside class:list={["note", stacked && "note-stack"]}>
+  <span class="pill pill-muted">{provisional.pendingLabel}</span>
+  <div>
+    {title && <p class="strong">{title}</p>}
+    {body && <p class="muted">{body}</p>}
+  </div>
+</aside>

@@ -1,0 +1,171 @@
+---
+import Base from "../layouts/Base.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import Icon from "../components/Icon.astro";
+import PremiumHero from "../components/PremiumHero.astro";
+import ModuleThumb from "../components/ModuleThumb.astro";
+import Provisional from "../components/Provisional.astro";
+import FaqList from "../components/FaqList.astro";
+import { eventLink, homePriceHeadline, priceSummary } from "../content/provisional";
+import "../styles/global.css";
+
+const steps = [
+  {
+    n: "1",
+    icon: "calendar",
+    title: "Pick your event + template",
+    body: "Tell us what you’re hosting and we suggest a layout and palette that fit.",
+    mobile: "We suggest a layout and palette.",
+  },
+  {
+    n: "2",
+    icon: "image",
+    title: "Customize copy, palette, RSVP",
+    body: "Edit every word, reorder sections and choose what guests answer.",
+    mobile: "Edit every word, choose what guests answer.",
+  },
+  {
+    n: "3",
+    icon: "guests",
+    title: "Publish & share your link",
+    body: "One link for texts, socials and QR. RSVPs land in your dashboard.",
+    mobile: "RSVPs land in your dashboard.",
+  },
+];
+---
+
+<Base
+  title="Sidebite — Your event page, live in minutes"
+  description="Pick a template, drop in your details and share one link. Guests RSVP in seconds."
+>
+  <SiteHeader current="home" />
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow-pill">Event pages with RSVP built in</p>
+        <h1 id="hero-title" class="display">Your event page, live in minutes.</h1>
+        <p class="lead desk">
+          Pick a template, drop in your details and share one link. Guests RSVP in seconds — you watch the list fill up.
+        </p>
+        <p class="lead mob">Pick a template, drop in your details and share one link.</p>
+        <div class="row" style="flex-wrap:wrap;width:100%">
+          <a class="btn btn-primary btn-stack" href="/demo/event-type">Create your event page</a>
+          <a class="btn btn-secondary btn-stack" href="#templates">See templates</a>
+        </div>
+        <p class="fine desk">Free to start · No code · Works on every phone</p>
+      </div>
+      <div class="hero-visual desk" aria-hidden="true">
+        <div class="browser">
+          <div class="chrome">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="url">{eventLink("eleanor-and-james")}</span>
+          </div>
+          <div class="thumb" style="height:min(calc(var(--d) * 361), 48svh);border-radius:0">
+            <PremiumHero />
+          </div>
+        </div>
+        <div class="phone">
+          <div class="phone-screen">
+            <PremiumHero phone />
+          </div>
+        </div>
+      </div>
+      <div class="phone-only mob" aria-hidden="true">
+        <div class="phone">
+          <div class="phone-screen">
+            <PremiumHero phone />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="how" aria-labelledby="how-title">
+      <div class="stack" style="margin-bottom:var(--space-48)">
+        <p class="kicker">HOW IT WORKS</p>
+        <h2 id="how-title" class="h2 facts-on-narrow">Three steps to a page you’re proud of</h2>
+      </div>
+      <div class="steps">
+        {
+          steps.map((step) => (
+            <article class="card step-card">
+              <div class="row">
+                <span class="num">{step.n}</span>
+                <Icon class="desk" name={step.icon} />
+              </div>
+              <h3 class="facts-title">{step.title}</h3>
+              <p class="muted desk">{step.body}</p>
+              <p class="muted mob">{step.mobile}</p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="section-tight band" id="templates" aria-labelledby="templates-title">
+      <div class="split" style="margin-bottom:var(--space-40)">
+        <div class="stack" style="align-items:flex-start">
+          <p class="kicker">TEMPLATES</p>
+          <h2 id="templates-title" class="h2 facts-on-narrow">Start from a page that already looks finished</h2>
+        </div>
+        <a class="btn btn-link desk" href="#templates">
+          Browse all templates <Icon name="chevron" class="icon-sm" />
+        </a>
+      </div>
+      <div class="gallery">
+        <article class="card template-card">
+          <div class="thumb" aria-hidden="true"><PremiumHero /></div>
+          <div class="split">
+            <h3 class="facts-title">Premium</h3>
+            <span class="pill">Milestone</span>
+          </div>
+          <p class="muted desk">Quiet, editorial and full-bleed. Weddings, galas, dinners.</p>
+        </article>
+        <article class="card template-card">
+          <div class="thumb" style="background:var(--color-bg-muted)" aria-hidden="true">
+            <ModuleThumb font="figtree" />
+          </div>
+          <h3 class="facts-title">Halloween</h3>
+          <p class="muted desk">Bold, playful and loud. Parties and seasonal nights.</p>
+        </article>
+        <article class="card template-card desk">
+          <div class="thumb" style="background:var(--color-bg-muted)" aria-hidden="true">
+            <ModuleThumb font="grotesk" />
+          </div>
+          <h3 class="facts-title">Run Club</h3>
+          <p class="muted">Energetic and sporty. Weekly runs and meetups.</p>
+        </article>
+      </div>
+      <div class="soon-row desk" style="margin-top:var(--space-24)">
+        <article class="soon"><h3 class="strong">Tech meetup</h3><p class="fine">Coming Oct 26</p></article>
+        <article class="soon"><h3 class="strong">Nightlife</h3><p class="fine">Coming Oct 28</p></article>
+        <article class="soon"><h3 class="strong">Wedding classic</h3><p class="fine">Coming Oct 30</p></article>
+      </div>
+      <div style="margin-top:var(--space-24)">
+        <Provisional title="Premium template: Milestone only" body="" />
+      </div>
+    </section>
+
+    <section class="price-teaser" aria-labelledby="price-title">
+      <p class="kicker desk">PRICING</p>
+      <h2 id="price-title" class="h2 desk">{homePriceHeadline()}</h2>
+      <h2 class="h2 mob">One-time price per event. Hosting until a month after.</h2>
+      <div class="note-wrap">
+        <Provisional title="Pricing" body={priceSummary()} />
+      </div>
+      <a class="btn btn-secondary btn-stack" href="/pricing">Compare plans</a>
+    </section>
+
+    <section class="faq band" aria-labelledby="faq-title">
+      <h2 id="faq-title" class="h2 facts-on-narrow">Questions, answered</h2>
+      <FaqList />
+    </section>
+
+    <section class="closing desk" aria-labelledby="close-title">
+      <h2 id="close-title" class="poster">Your guests are waiting for the link.</h2>
+      <p class="lead">Build it in minutes. Share it tonight.</p>
+      <a class="btn btn-primary" href="/demo/event-type">Create your event page</a>
+    </section>
+  </main>
+  <SiteFooter />
+</Base>

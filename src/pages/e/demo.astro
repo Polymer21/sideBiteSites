@@ -1,0 +1,46 @@
+---
+import Base from "../../layouts/Base.astro";
+import EventPage from "../../components/EventPage.astro";
+import Provisional from "../../components/Provisional.astro";
+import { eventLink } from "../../content/provisional";
+import "../../styles/global.css";
+---
+
+<Base title="Spooky Soirée — RSVP" description="Guest view for the Halloween demo. RSVP stays in the browser." demo>
+  <header class="flow-header">
+    <a class="logo" href="/">
+      <span class="logo-mark" aria-hidden="true"></span>
+      <span class="logo-word">Sidebite</span>
+    </a>
+    <p class="fine" style="margin-left:auto">GUEST VIEW · {eventLink("spooky-soiree")}</p>
+  </header>
+  <main id="main" class="flow">
+    <p class="lead">Real Halloween template modules · RSVP open and success states</p>
+    <section aria-labelledby="top-label" style="margin:var(--space-24) 0">
+      <h1 id="top-label" class="facts-title">Page top</h1>
+      <div class="preview-frame">
+        <EventPage idPrefix="top" form="none" />
+      </div>
+    </section>
+    <div class="guest-states">
+      <EventPage idPrefix="open" form="open" />
+      <div id="success-state">
+        <EventPage idPrefix="done" form="success" />
+      </div>
+    </div>
+    <div class="warn" style="margin-top:var(--space-24)">
+      <p class="pill pill-solid">DECISION NEEDED</p>
+      <h2 class="facts-title">Domain name</h2>
+      <Provisional title="The domain in links is not chosen." body={eventLink("{slug}")} />
+    </div>
+  </main>
+</Base>
+<script>
+  import { applyDraft } from "../../scripts/draft";
+  applyDraft();
+  document.querySelector("[data-rsvp]")?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    document.getElementById("success-state")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.getElementById("success-state")?.querySelector("h3")?.focus();
+  });
+</script>

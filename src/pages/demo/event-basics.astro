@@ -1,0 +1,71 @@
+---
+import Base from "../../layouts/Base.astro";
+import FlowHeader from "../../components/FlowHeader.astro";
+import { defaultDraft } from "../../content/copy";
+import "../../styles/global.css";
+const draft = defaultDraft;
+---
+
+<Base title="Event basics — Sidebite" description="Just enough for guests to say yes." demo>
+  <FlowHeader step={2} />
+  <main id="main" class="flow">
+    <form class="flow-narrow" id="basics-form">
+      <header>
+        <h1 class="h2">The basics</h1>
+        <p class="lead">Just enough for guests to say yes. Everything is editable.</p>
+      </header>
+      <div class="callout">
+        <p class="strong">Takes about a minute</p>
+        <p class="muted">Only the event name is required to continue. Date, venue and description can be filled in the editor.</p>
+      </div>
+      <label class="field">Event name
+        <input name="name" required value={draft.name} data-field="name" />
+      </label>
+      <div class="field-row">
+        <label class="field">Date
+          <input name="date" value={draft.dateLong} data-field="dateLong" />
+        </label>
+        <label class="field">Start time
+          <input name="time" value={draft.time} data-field="time" />
+        </label>
+      </div>
+      <label class="field">Venue
+        <input name="venue" value={draft.venue} data-field="venue" />
+      </label>
+      <label class="field">Address
+        <input name="address" value={draft.address} data-field="address" />
+      </label>
+      <div class="callout">
+        <p class="strong">Guests see this first</p>
+        <p class="muted">These details fill the hero and details sections of your page.</p>
+      </div>
+      <div class="actions">
+        <a class="btn btn-secondary" href="/demo/event-type">Back</a>
+        <button class="btn btn-primary" type="submit">Continue</button>
+      </div>
+    </form>
+  </main>
+</Base>
+<script>
+  import { readDraft, writeDraft } from "../../scripts/draft";
+  const form = document.getElementById("basics-form");
+  const draft = readDraft();
+  form?.querySelectorAll<HTMLInputElement>("input").forEach((input) => {
+    const key = input.dataset.field as keyof typeof draft | undefined;
+    if (key && typeof draft[key] === "string") input.value = draft[key] as string;
+  });
+  form?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const data = new FormData(form as HTMLFormElement);
+    const dateLong = String(data.get("date") || "");
+    writeDraft({
+      name: String(data.get("name") || ""),
+      dateLong,
+      date: dateLong.replace(/ 2026$/, ""),
+      time: String(data.get("time") || ""),
+      venue: String(data.get("venue") || ""),
+      address: String(data.get("address") || ""),
+    });
+    location.href = "/demo/template";
+  });
+</script>

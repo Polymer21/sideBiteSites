@@ -1,0 +1,102 @@
+---
+import Base from "../../layouts/Base.astro";
+import FlowHeader from "../../components/FlowHeader.astro";
+import EventPage from "../../components/EventPage.astro";
+import Provisional from "../../components/Provisional.astro";
+import "../../styles/global.css";
+
+const layouts = [
+  { id: "halloween", name: "Halloween", note: "Parties and seasonal nights" },
+  { id: "premium", name: "Premium", note: "Milestone" },
+  { id: "run", name: "Run Club", note: "Weekly runs and meetups" },
+];
+const palettes = [
+  { id: "tripletree", name: "TripleTee" },
+  { id: "default", name: "Default" },
+  { id: "premium", name: "Premium" },
+];
+---
+
+<Base title="Template and palette — Sidebite" description="Choose a look. Layout sets the structure. Palette sets the colours." demo>
+  <FlowHeader step={3} />
+  <main id="main" class="flow">
+    <div class="look">
+      <div>
+        <header>
+          <p class="mob strong">Step 3 of 4</p>
+          <h1 class="h2">Choose a look</h1>
+          <p class="lead">Layout sets the structure. Palette sets the colours.</p>
+        </header>
+        <section aria-labelledby="layout-label" style="margin-top:var(--space-24)">
+          <h2 id="layout-label" class="facts-title">Layout</h2>
+          <div class="type-grid" style="margin-top:var(--space-12);grid-template-columns:1fr">
+            {
+              layouts.map((layout) => (
+                <button class="card choice" type="button" data-layout={layout.id} aria-pressed={layout.id === "halloween" ? "true" : "false"}>
+                  <span>
+                    <span class="strong">{layout.name}</span><br />
+                    <span class="fine">{layout.note}</span>
+                  </span>
+                </button>
+              ))
+            }
+          </div>
+          <p class="fine" style="margin-top:var(--space-12)">More layouts — Run club Oct 23 · Tech meetup Oct 26 · Nightlife Oct 28 · Wedding Oct 30</p>
+        </section>
+        <section aria-labelledby="palette-label" style="margin-top:var(--space-24)">
+          <h2 id="palette-label" class="facts-title">Palette</h2>
+          <div class="row" style="flex-wrap:wrap;margin-top:var(--space-12)">
+            {
+              palettes.map((palette) => (
+                <button class="card choice" type="button" data-palette-choice={palette.id} aria-pressed={palette.id === "tripletree" ? "true" : "false"}>
+                  <span class="swatch" style={`background:var(--color-accent)`}></span>
+                  <span class="strong">{palette.name}</span>
+                </button>
+              ))
+            }
+          </div>
+          <div style="margin-top:var(--space-16)">
+            <Provisional title="Premium template: Milestone only" body="" />
+          </div>
+        </section>
+        <div class="actions" style="margin-top:var(--space-32)">
+          <a class="btn btn-secondary" href="/demo/event-basics">Back</a>
+          <a class="btn btn-primary" href="/demo/editor">Use this look</a>
+        </div>
+      </div>
+      <div class="look-preview">
+        <p class="fine">Live preview</p>
+        <div class="preview-frame" style="margin-top:var(--space-12)">
+          <EventPage idPrefix="look" />
+        </div>
+      </div>
+    </div>
+  </main>
+</Base>
+<script>
+  import { readDraft, writeDraft, applyDraft } from "../../scripts/draft";
+  const draft = readDraft();
+  const press = (selector: string, attr: string, value: string) => {
+    document.querySelectorAll<HTMLButtonElement>(selector).forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.getAttribute(attr) === value));
+    });
+  };
+  press("[data-layout]", "data-layout", draft.layout);
+  press("[data-palette-choice]", "data-palette-choice", draft.palette);
+  document.querySelectorAll<HTMLButtonElement>("[data-layout]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const layout = button.dataset.layout as "halloween" | "premium" | "run";
+      writeDraft({ layout });
+      press("[data-layout]", "data-layout", layout);
+      applyDraft();
+    });
+  });
+  document.querySelectorAll<HTMLButtonElement>("[data-palette-choice]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const palette = button.dataset.paletteChoice as "tripletree" | "default" | "premium";
+      writeDraft({ palette });
+      press("[data-palette-choice]", "data-palette-choice", palette);
+      applyDraft();
+    });
+  });
+</script>

@@ -1,0 +1,82 @@
+---
+import Base from "../../layouts/Base.astro";
+import Provisional from "../../components/Provisional.astro";
+import { eventLink, keepLivePrice } from "../../content/provisional";
+import { defaultDraft } from "../../content/copy";
+import "../../styles/global.css";
+const link = eventLink(defaultDraft.slug);
+---
+
+<Base title="Your page is live — Sidebite" description="Share the link. This demo did not publish anything." demo>
+  <header class="flow-header">
+    <a class="logo" href="/">
+      <span class="logo-mark" aria-hidden="true"></span>
+      <span class="logo-word">Sidebite</span>
+    </a>
+  </header>
+  <main id="main" class="flow">
+    <div class="flow-narrow">
+      <header>
+        <h1 class="h2">Your page is live</h1>
+        <p class="lead">Share the link — RSVPs will show up on your dashboard.</p>
+      </header>
+      <section class="success-card" aria-labelledby="link-label">
+        <h2 id="link-label" class="facts-title">Your link</h2>
+        <div class="link-box">
+          <code id="share-link">{link}</code>
+          <button class="btn btn-secondary" type="button" id="copy-link">Copy link</button>
+        </div>
+        <h3 class="strong">Share to</h3>
+        <div class="share-row">
+          <a class="btn btn-secondary" href={`sms:?&body=${encodeURIComponent(link)}`}>Messages</a>
+          <a class="btn btn-secondary" href={`https://wa.me/?text=${encodeURIComponent(link)}`}>WhatsApp</a>
+          <a class="btn btn-secondary" href={`https://www.instagram.com/`} >Instagram</a>
+          <a class="btn btn-secondary" href={`mailto:?body=${encodeURIComponent(link)}`}>Email</a>
+        </div>
+        <a class="btn btn-link" href="/e/demo">Download QR</a>
+      </section>
+      <div class="warn">
+        <p class="pill pill-solid">DECISION NEEDED</p>
+        <h2 class="facts-title">Domain name</h2>
+        <Provisional title="URL pattern" body={`${eventLink("{slug}")} is provisional.`} />
+      </div>
+      <section class="callout">
+        <p class="strong">Live until {defaultDraft.hostingUntil}</p>
+        <p>Celebrate · paid</p>
+        <p class="muted">Hosting is included until a month after your event. Then keep it live for {keepLivePrice()}, or let it go on hold (restore any time within 12 months).</p>
+        <fieldset style="border:0;padding:0">
+          <legend class="strong">Warn me before takedown by</legend>
+          <div class="segmented" id="warn-by">
+            <button class="btn btn-secondary" type="button" aria-pressed="true">Email</button>
+            <button class="btn btn-secondary" type="button" aria-pressed="false">Text</button>
+            <button class="btn btn-secondary" type="button" aria-pressed="false">Both</button>
+          </div>
+        </fieldset>
+      </section>
+      <a class="btn btn-primary" href="/demo/dashboard">Go to dashboard</a>
+    </div>
+  </main>
+</Base>
+<script>
+  document.getElementById("copy-link")?.addEventListener("click", async () => {
+    const text = document.getElementById("share-link")?.textContent || "";
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const range = document.createRange();
+      const node = document.getElementById("share-link");
+      if (!node) return;
+      range.selectNodeContents(node);
+      const selection = getSelection();
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+    }
+  });
+  document.getElementById("warn-by")?.addEventListener("click", (event) => {
+    const button = (event.target as HTMLElement).closest("button");
+    if (!button) return;
+    button.parentElement?.querySelectorAll("button").forEach((other) => {
+      other.setAttribute("aria-pressed", String(other === button));
+    });
+  });
+</script>

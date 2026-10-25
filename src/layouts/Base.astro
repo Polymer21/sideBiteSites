@@ -1,0 +1,25 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  demo?: boolean;
+}
+const { title, description, demo = false } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" data-palette="default">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="stylesheet" href="/fonts/fonts.css" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    {demo && <p class="demo-badge">Demo</p>}
+    <slot />
+  </body>
+</html>

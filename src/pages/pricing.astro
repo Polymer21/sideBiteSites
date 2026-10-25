@@ -1,0 +1,139 @@
+---
+import Base from "../layouts/Base.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import Icon from "../components/Icon.astro";
+import Provisional from "../components/Provisional.astro";
+import {
+  celebrateFeatures,
+  gatherFeatures,
+  freeFeatures,
+  keepLivePrice,
+  milestoneFeatures,
+  money,
+  provisional,
+} from "../content/provisional";
+import "../styles/global.css";
+
+const tiers = [
+  {
+    id: "free",
+    name: "Free draft",
+    price: provisional.prices.free,
+    cadence: "drafts only",
+    blurb: "Build and preview before you pay.",
+    cta: "Start free",
+    href: "/demo/event-type",
+    variant: "secondary" as const,
+    features: freeFeatures.map((f) => ({ ok: f.included, label: f.label })),
+    note: false,
+  },
+  {
+    id: "gather",
+    name: "Gather",
+    price: provisional.prices.gather,
+    cadence: "one-time per event",
+    blurb: "Everything you need to get people there.",
+    cta: "Choose Gather",
+    href: "/demo/checkout?tier=gather",
+    variant: "secondary" as const,
+    features: gatherFeatures.map((label) => ({ ok: true, label })),
+    note: false,
+  },
+  {
+    id: "celebrate",
+    name: "Celebrate",
+    price: provisional.prices.celebrate,
+    cadence: "one-time per event",
+    blurb: "Make it yours.",
+    cta: "Choose Celebrate",
+    href: "/demo/checkout?tier=celebrate",
+    variant: "primary" as const,
+    popular: true,
+    features: celebrateFeatures.map((label) => ({ ok: true, label })),
+    note: false,
+  },
+  {
+    id: "milestone",
+    name: "Milestone",
+    price: provisional.prices.milestone,
+    cadence: "one-time per event",
+    blurb: "For the big ones.",
+    cta: "Choose Milestone",
+    href: "/demo/checkout?tier=milestone",
+    variant: "secondary" as const,
+    features: milestoneFeatures.map((label) => ({ ok: true, label })),
+    note: true,
+  },
+];
+---
+
+<Base
+  title="Pricing — Sidebite"
+  description="One price per event. Pay once when you publish. Hosting runs until a month after your event."
+>
+  <SiteHeader current="pricing" />
+  <main id="main" class="pricing">
+    <header class="stack">
+      <p class="kicker">PRICING</p>
+      <h1 class="h2">One price per event. Pick what fits.</h1>
+      <p class="lead">Pay once when you publish. Hosting runs until a month after your event.</p>
+    </header>
+
+    <section class="billing" aria-label="How billing works">
+      <div>
+        <h2 class="strong">One payment per event</h2>
+        <p class="muted">No subscription to get started.</p>
+      </div>
+      <div>
+        <h2 class="strong">Hosting included</h2>
+        <p class="muted">Live until 1 month after your event.</p>
+      </div>
+      <div>
+        <h2 class="strong">Keep it live (optional)</h2>
+        <p class="muted">{keepLivePrice()} after that. We warn you by email, text or both.</p>
+      </div>
+      <div>
+        <h2 class="strong">Upgrade anytime</h2>
+        <p class="muted">Pay only the difference.</p>
+      </div>
+    </section>
+
+    <section class="tiers" aria-label="Plans">
+      {
+        tiers.map((tier) => (
+          <article class:list={["tier", tier.id === "celebrate" && "tier-pop"]}>
+            <div class="split">
+              <h2 class="facts-title">{tier.name}</h2>
+              {tier.id === "celebrate" && <span class="pill pill-solid">Most popular</span>}
+            </div>
+            <p>
+              <span class="price">{money(tier.price)}</span><br />
+              <span class="muted">{tier.cadence}</span>
+            </p>
+            <p class="muted">{tier.blurb}</p>
+            <hr class="rule" />
+            <ul class="features">
+              {tier.features.map((feature) => (
+                <li>
+                  <Icon name={feature.ok ? "check" : "minus"} class={feature.ok ? "ok" : "no"} />
+                  <span class={feature.ok ? "" : "muted"}>{feature.label}</span>
+                </li>
+              ))}
+            </ul>
+            {tier.note && (
+              <Provisional stacked title="Milestone features" body="List provisional." />
+            )}
+            <a class:list={["btn", "btn-block", tier.variant === "primary" ? "btn-primary" : "btn-secondary"]} href={tier.href}>
+              {tier.cta}
+            </a>
+          </article>
+        ))
+      }
+    </section>
+
+    <section class="pricing-notes" aria-label="Pricing notes">
+      <p class="fine">*Change-round count may change. Prices may change too.</p>
+      <Provisional title="Pricing and features" body="All prices and the Milestone list need Tim’s sign-off." />
+    </section>
+  </main>
+</Base>

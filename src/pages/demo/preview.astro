@@ -1,0 +1,43 @@
+---
+import Base from "../../layouts/Base.astro";
+import EventPage from "../../components/EventPage.astro";
+import Provisional from "../../components/Provisional.astro";
+import { eventLink } from "../../content/provisional";
+import "../../styles/global.css";
+---
+
+<Base title="Preview — Sidebite" description="Preview your draft. Free drafts can’t publish." demo>
+  <header class="flow-header">
+    <a class="logo" href="/">
+      <span class="logo-mark" aria-hidden="true"></span>
+      <span class="logo-word">Sidebite</span>
+    </a>
+    <a class="btn btn-secondary" href="/demo/editor">Back to editor</a>
+    <span class="pill">Draft</span>
+    <a class="btn btn-primary" href="/demo/account" style="margin-left:auto">Publish</a>
+  </header>
+  <main id="main" class="flow flow-wide">
+    <Provisional title="Free drafts can’t publish. Publish takes you to plan selection." body="" />
+    <div class="warn" style="margin-top:var(--space-16)">
+      <p class="pill pill-solid">DECISION NEEDED</p>
+      <h1 class="facts-title" style="margin-top:var(--space-8)">Domain name</h1>
+      <Provisional title="URL pattern" body={`${eventLink("{slug}")}; own web address on Milestone.`} />
+    </div>
+    <section style="margin-top:var(--space-32)" aria-labelledby="desk-preview">
+      <h2 id="desk-preview" class="facts-title">Desktop · 1440</h2>
+      <div class="preview-frame" style="margin-top:var(--space-12)">
+        <EventPage idPrefix="desk" form="open" />
+      </div>
+    </section>
+    <section style="margin-top:var(--space-32)" aria-labelledby="phone-preview">
+      <h2 id="phone-preview" class="facts-title">Mobile · 390</h2>
+      <div class="preview-frame is-phone" style="margin-top:var(--space-12)">
+        <EventPage idPrefix="phone" form="open" />
+      </div>
+    </section>
+  </main>
+</Base>
+<script>
+  import { applyDraft } from "../../scripts/draft";
+  applyDraft();
+</script>

@@ -1,0 +1,88 @@
+---
+import Base from "../../layouts/Base.astro";
+import Provisional from "../../components/Provisional.astro";
+import { keepLivePrice, money, provisional } from "../../content/provisional";
+import { defaultDraft } from "../../content/copy";
+import "../../styles/global.css";
+const names: Record<string, string> = {
+  free: "Free draft",
+  gather: "Gather",
+  celebrate: "Celebrate",
+  milestone: "Milestone",
+};
+---
+
+<Base title="Checkout — Sidebite" description="Secure checkout mock. No payment is taken." demo>
+  <header class="flow-header">
+    <a class="logo" href="/">
+      <span class="logo-mark" aria-hidden="true"></span>
+      <span class="logo-word">Sidebite</span>
+    </a>
+    <span class="pill" style="margin-left:auto">Secure checkout</span>
+  </header>
+  <main id="main" class="flow">
+    <div class="two" id="checkout" data-prices={JSON.stringify(provisional.prices)} data-names={JSON.stringify(names)} data-hosting={defaultDraft.hostingUntil} data-keep={keepLivePrice()}>
+      <form class="checkout-card" id="pay-form" action="/demo/published">
+        <h1 class="h2">Checkout</h1>
+        <label class="field">Email
+          <input type="email" name="email" value="you@example.com" autocomplete="email" required />
+        </label>
+        <label class="field">Name on receipt
+          <input name="receipt" value="Tim Hoyt" autocomplete="name" />
+        </label>
+        <section aria-labelledby="pay-label">
+          <h2 id="pay-label" class="facts-title">Payment</h2>
+          <p class="muted">You’ll finish paying on Stripe’s secure page, then come straight back here to publish. We never see your card details.</p>
+          <p class="strong">Secure payment by Stripe</p>
+          <Provisional title="Dev note" body="Stripe account pending Tim approval." />
+        </section>
+        <button class="btn btn-primary" type="submit">Continue to secure payment</button>
+      </form>
+      <aside class="summary" aria-label="Order summary">
+        <h2 class="facts-title">Order summary</h2>
+        <p class="strong" data-field="name">{defaultDraft.name}</p>
+        <p class="muted"><span data-field="date">{defaultDraft.date}</span> · Halloween layout</p>
+        <div class="summary-row">
+          <span id="tier-label">Celebrate · one-time</span>
+          <strong id="tier-price">{money(provisional.prices.celebrate)}</strong>
+        </div>
+        <div class="summary-row">
+          <span>Hosting</span>
+          <span>Until {defaultDraft.hostingUntil}</span>
+        </div>
+        <div class="summary-row">
+          <span>Tax</span>
+          <span>Calculated at Stripe</span>
+        </div>
+        <div class="summary-row">
+          <span class="strong">Total due today</span>
+          <strong id="tier-total">{money(provisional.prices.celebrate)}</strong>
+        </div>
+        <p class="fine" id="after">After your event your page stays live until {defaultDraft.hostingUntil}. After that, Keep it live is optional: {keepLivePrice()}. Upgrade later and pay only the difference.</p>
+      </aside>
+    </div>
+  </main>
+</Base>
+<script>
+  import { readDraft, writeDraft, applyDraft } from "../../scripts/draft";
+  const root = document.getElementById("checkout");
+  const prices = JSON.parse(root?.dataset.prices || "{}") as Record<string, number>;
+  const names = JSON.parse(root?.dataset.names || "{}") as Record<string, string>;
+  const params = new URLSearchParams(location.search);
+  const fromQuery = params.get("tier");
+  const draft = readDraft();
+  const tier = (fromQuery && fromQuery in prices ? fromQuery : draft.tier) as keyof typeof prices;
+  writeDraft({ tier: tier as typeof draft.tier });
+  const amount = `$${prices[tier] ?? prices.celebrate}`;
+  const label = document.getElementById("tier-label");
+  const price = document.getElementById("tier-price");
+  const total = document.getElementById("tier-total");
+  if (label) label.textContent = `${names[tier] || "Celebrate"} · one-time`;
+  if (price) price.textContent = amount;
+  if (total) total.textContent = amount;
+  document.getElementById("pay-form")?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    location.href = "/demo/published";
+  });
+  applyDraft();
+</script>
