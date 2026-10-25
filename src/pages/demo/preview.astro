@@ -1,6 +1,7 @@
 ---
 import Base from "../../layouts/Base.astro";
 import EventPage from "../../components/EventPage.astro";
+import ScaleBox from "../../components/ScaleBox.astro";
 import Provisional from "../../components/Provisional.astro";
 import { eventLink } from "../../content/provisional";
 import "../../styles/global.css";
@@ -25,14 +26,18 @@ import "../../styles/global.css";
     </div>
     <section style="margin-top:var(--space-32)" aria-labelledby="desk-preview">
       <h2 id="desk-preview" class="facts-title">Desktop · 1440</h2>
-      <div class="preview-frame" style="margin-top:var(--space-12)">
-        <EventPage idPrefix="desk" form="open" />
+      <div class="preview-frame preview-desk" style="margin-top:var(--space-12)">
+        <ScaleBox width={1440} height={1833}>
+          <EventPage idPrefix="desk" form="open" />
+        </ScaleBox>
       </div>
     </section>
     <section style="margin-top:var(--space-32)" aria-labelledby="phone-preview">
       <h2 id="phone-preview" class="facts-title">Mobile · 390</h2>
       <div class="preview-frame is-phone" style="margin-top:var(--space-12)">
-        <EventPage idPrefix="phone" form="open" />
+        <ScaleBox width={390} height={844} phone>
+          <EventPage idPrefix="phone" form="open" />
+        </ScaleBox>
       </div>
     </section>
   </main>

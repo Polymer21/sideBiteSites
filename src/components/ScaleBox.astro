@@ -1,0 +1,17 @@
+---
+interface Props {
+  width?: number;
+  height?: number;
+  phone?: boolean;
+}
+const { width = 1440, height = 1600, phone = false } = Astro.props;
+---
+
+<div
+  class:list={["scale-box", phone && "is-phone"]}
+  style={`--design-w:${width};--design-h:${height}`}
+>
+  <div class="scale-canvas">
+    <slot />
+  </div>
+</div>

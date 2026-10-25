@@ -1,6 +1,7 @@
 ---
 import Base from "../../layouts/Base.astro";
 import EventPage from "../../components/EventPage.astro";
+import ScaleBox from "../../components/ScaleBox.astro";
 import Provisional from "../../components/Provisional.astro";
 import "../../styles/global.css";
 ---
@@ -30,7 +31,9 @@ import "../../styles/global.css";
       <aside>
         <p class="fine">Your draft is safe</p>
         <div class="preview-frame" style="margin-top:var(--space-12)">
-          <EventPage idPrefix="account" />
+          <ScaleBox width={1440} height={1200}>
+            <EventPage idPrefix="account" />
+          </ScaleBox>
         </div>
       </aside>
     </div>

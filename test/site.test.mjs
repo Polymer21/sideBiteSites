@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createServer } from "node:http";
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
@@ -126,4 +127,64 @@ test("built routes exist", async () => {
   assert.match(pricing, /\$0/);
   assert.match(pricing, /\$300/);
   assert.match(pricing, /5 change rounds/);
+});
+
+test("built pages do not scroll horizontally", async () => {
+  const { chromium } = await import("playwright");
+  const dist = path.join(root, "dist");
+  const types = {
+    ".html": "text/html; charset=utf-8",
+    ".css": "text/css",
+    ".js": "text/javascript",
+    ".svg": "image/svg+xml",
+    ".woff2": "font/woff2",
+  };
+  const server = createServer(async (req, res) => {
+    try {
+      const url = new URL(req.url || "/", "http://127.0.0.1");
+      let pathname = decodeURIComponent(url.pathname);
+      if (pathname.endsWith("/")) pathname += "index.html";
+      const file = path.join(dist, pathname);
+      const body = await readFile(file);
+      const ext = path.extname(file);
+      res.writeHead(200, { "content-type": types[ext] || "application/octet-stream" });
+      res.end(body);
+    } catch {
+      res.writeHead(404);
+      res.end("missing");
+    }
+  });
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  const address = server.address();
+  const port = typeof address === "object" && address ? address.port : 0;
+  const routes = [
+    "/",
+    "/pricing/",
+    "/demo/event-type/",
+    "/demo/event-basics/",
+    "/demo/template/",
+    "/demo/editor/",
+    "/demo/preview/",
+    "/demo/account/",
+    "/demo/checkout/",
+    "/demo/published/",
+    "/demo/dashboard/",
+    "/e/demo/",
+  ];
+  const browser = await chromium.launch();
+  try {
+    for (const width of [390, 768, 1920]) {
+      const page = await browser.newPage({ viewport: { width, height: 900 } });
+      for (const route of routes) {
+        const response = await page.goto(`http://127.0.0.1:${port}${route}`, { waitUntil: "networkidle" });
+        assert.equal(response?.status(), 200, route);
+        const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+        assert.ok(overflow <= 1, `${route} at ${width}px overflows by ${overflow}px`);
+      }
+      await page.close();
+    }
+  } finally {
+    await browser.close();
+    await new Promise((resolve) => server.close(resolve));
+  }
 });

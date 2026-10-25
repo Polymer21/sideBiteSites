@@ -1,46 +1,53 @@
 ---
 import Base from "../../layouts/Base.astro";
-import EventPage from "../../components/EventPage.astro";
-import Provisional from "../../components/Provisional.astro";
+import ScaleBox from "../../components/ScaleBox.astro";
+import GuestPhone from "../../components/GuestPhone.astro";
 import { eventLink } from "../../content/provisional";
 import "../../styles/global.css";
+
+const phones = [
+  { label: "RSVP · Open", variant: "open" as const },
+  { label: "RSVP · Success", variant: "success" as const },
+  { label: "Page top", variant: "top" as const },
+];
 ---
 
 <Base title="Spooky Soirée — RSVP" description="Guest view for the Halloween demo. RSVP stays in the browser." demo>
-  <header class="flow-header">
-    <a class="logo" href="/">
-      <span class="logo-mark" aria-hidden="true"></span>
-      <span class="logo-word">Sidebite</span>
-    </a>
-    <p class="fine" style="margin-left:auto">GUEST VIEW · {eventLink("spooky-soiree")}</p>
-  </header>
-  <main id="main" class="flow">
-    <p class="lead">Real Halloween template modules · RSVP open and success states</p>
-    <section aria-labelledby="top-label" style="margin:var(--space-24) 0">
-      <h1 id="top-label" class="facts-title">Page top</h1>
-      <div class="preview-frame">
-        <EventPage idPrefix="top" form="none" />
-      </div>
-    </section>
-    <div class="guest-states">
-      <EventPage idPrefix="open" form="open" />
-      <div id="success-state">
-        <EventPage idPrefix="done" form="success" />
-      </div>
-    </div>
-    <div class="warn" style="margin-top:var(--space-24)">
-      <p class="pill pill-solid">DECISION NEEDED</p>
-      <h2 class="facts-title">Domain name</h2>
-      <Provisional title="The domain in links is not chosen." body={eventLink("{slug}")} />
+  <main id="main" class="guest-view">
+    <header class="guest-intro">
+      <p class="kicker">GUEST VIEW</p>
+      <h1>What guests see at {eventLink("spooky-soiree")}</h1>
+      <p>Real Halloween template modules · RSVP open and success states</p>
+    </header>
+    <div class="guest-phones">
+      {
+        phones.map((phone) => (
+          <figure>
+            <figcaption>{phone.label}</figcaption>
+            <div class="phone-frame">
+              <ScaleBox width={390} height={844} phone>
+                <GuestPhone variant={phone.variant} />
+              </ScaleBox>
+            </div>
+          </figure>
+        ))
+      }
     </div>
   </main>
 </Base>
 <script>
   import { applyDraft } from "../../scripts/draft";
   applyDraft();
+  document.querySelectorAll<HTMLButtonElement>("[data-count]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const output = button.parentElement?.querySelector<HTMLOutputElement>("[data-count-value]");
+      if (!output) return;
+      const next = Math.min(12, Math.max(1, Number(output.value) + Number(button.dataset.count)));
+      output.value = String(next);
+    });
+  });
   document.querySelector("[data-rsvp]")?.addEventListener("submit", (event) => {
     event.preventDefault();
-    document.getElementById("success-state")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    document.getElementById("success-state")?.querySelector("h3")?.focus();
+    document.getElementById("rsvp-success")?.focus();
   });
 </script>

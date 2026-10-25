@@ -36,6 +36,7 @@ export function applyDraft(root: ParentNode = document): void {
     button: draft.button,
   };
   root.querySelectorAll<HTMLElement>("[data-field]").forEach((node) => {
+    if (node.closest("[data-frozen]")) return;
     const key = node.dataset.field;
     if (!key || text[key] == null) return;
     if (node instanceof HTMLInputElement || node instanceof HTMLTextAreaElement) {
@@ -45,11 +46,13 @@ export function applyDraft(root: ParentNode = document): void {
     }
   });
   root.querySelectorAll<HTMLElement>("[data-event-root]").forEach((node) => {
+    if (node.closest("[data-frozen]")) return;
     node.dataset.layout = draft.layout;
     node.classList.remove("layout-halloween", "layout-premium", "layout-run");
     node.classList.add(`layout-${draft.layout}`);
   });
   root.querySelectorAll<HTMLElement>("[data-section]").forEach((node) => {
+    if (node.closest("[data-frozen]")) return;
     const id = node.dataset.section as SectionId;
     node.hidden = draft.hidden.includes(id);
   });

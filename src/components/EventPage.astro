@@ -3,12 +3,18 @@ import { includedItems, eventFaqs, schedule, defaultDraft } from "../content/cop
 interface Props {
   form?: "open" | "success" | "none";
   idPrefix?: string;
+  lockedLayout?: "halloween" | "premium" | "run";
 }
-const { form = "none", idPrefix = "event" } = Astro.props;
+const { form = "none", idPrefix = "event", lockedLayout } = Astro.props;
 const draft = defaultDraft;
+const layout = lockedLayout ?? "halloween";
 ---
 
-<article class="event-page layout-halloween" data-event-root data-layout={draft.layout}>
+<article
+  class:list={["event-page", `layout-${layout}`]}
+  data-event-root={lockedLayout ? undefined : true}
+  data-layout={lockedLayout ?? draft.layout}
+>
   <header class="event-hero" data-section="hero" data-layout-class>
     <div>
       <p class="event-tag" data-field="type-label">Halloween</p>

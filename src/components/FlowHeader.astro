@@ -13,12 +13,21 @@ const steps = [
 ];
 ---
 
-<header class="flow-header">
+<header class:list={["flow-header", editor && "editor-header"]}>
   <a class="logo" href="/">
     <span class="logo-mark" aria-hidden="true"></span>
     <span class="logo-word">Sidebite</span>
   </a>
-  {step && <p class="mob strong">Step {step} of 4</p>}
+  {
+    step && (
+      <p class="mob progress-label">
+        <span>Step {step} of 4</span>
+        <span class="progress-segs" aria-hidden="true">
+          {steps.map((item) => <i class:list={[item.n <= step && "on"]} />)}
+        </span>
+      </p>
+    )
+  }
   {
     step && (
       <ol class="stepper desk" aria-label="Progress">
@@ -37,8 +46,8 @@ const steps = [
     {
       editor && (
         <>
-          <a class="btn btn-secondary" href="/demo/preview">Preview</a>
-          <a class="btn btn-primary" href="/demo/preview">Publish</a>
+          <a class="btn btn-secondary desk" href="/demo/preview">Preview</a>
+          <a class="btn btn-primary desk" href="/demo/preview">Publish</a>
         </>
       )
     }

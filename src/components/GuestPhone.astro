@@ -1,0 +1,82 @@
+---
+import { defaultDraft } from "../content/copy";
+
+interface Props {
+  variant: "open" | "success" | "top";
+}
+const { variant } = Astro.props;
+const draft = defaultDraft;
+---
+
+<div class:list={["guest-module", variant === "top" && "is-top"]}>
+  {
+    variant === "top" ? (
+      <div class="guest-hero">
+        <div class="guest-media">
+          <span class="icon icon-image" />
+          <span>Hero image</span>
+        </div>
+        <p class="event-tag">Halloween</p>
+        <h2 class="guest-display" data-field="name">{draft.name}</h2>
+        <p class="guest-lead" data-field="tagline">{draft.tagline}</p>
+        <p class="guest-poster">
+          <span data-field="date">{draft.date}</span>
+          <span data-field="venue">{draft.venue}</span>
+        </p>
+        <dl class="fact-box guest-facts">
+          <div><dt>DATE</dt><dd data-field="date">{draft.date}</dd></div>
+          <div><dt>TIME</dt><dd data-field="time">{draft.time}</dd></div>
+          <div><dt>VENUE</dt><dd data-field="address">{draft.address}</dd></div>
+          <div><dt>HOST</dt><dd data-field="host">{draft.host}</dd></div>
+        </dl>
+        <a class="btn btn-primary btn-block" href="#rsvp-open">{draft.button}</a>
+        <section class="guest-about">
+          <h3>About the party</h3>
+          <p data-field="tagline">{draft.tagline}</p>
+        </section>
+      </div>
+    ) : (
+      <div class="guest-rsvp">
+        <header>
+          <h2>RSVP</h2>
+          <p>Let <span data-field="host">{draft.host}</span> know you’re coming.</p>
+        </header>
+        <p class="guest-count"><span class="icon icon-guests icon-sm" /> 18 guests going</p>
+        <p class="fine">01 / 03</p>
+        {
+          variant === "success" ? (
+            <div class="guest-success" id="rsvp-success" tabindex="-1">
+              <span class="icon icon-calendar" />
+              <p class="guest-poster">You’re on the list!</p>
+              <p>See you on <span data-field="date">{draft.date}</span>.</p>
+            </div>
+          ) : (
+            <form class="guest-form" id="rsvp-open" data-rsvp>
+              <label class="field">Name
+                <input name="name" autocomplete="name" placeholder="Your name" required />
+              </label>
+              <fieldset>
+                <legend>Attending?</legend>
+                <div class="attend">
+                  <label class="chip"><input type="radio" name="attending" value="yes" checked /> Yes</label>
+                  <label class="chip"><input type="radio" name="attending" value="maybe" /> Maybe</label>
+                  <label class="chip"><input type="radio" name="attending" value="no" /> No</label>
+                </div>
+              </fieldset>
+              <div class="field">
+                <span id="count-label">Guest count (including you)</span>
+                <div class="stepper-field" role="group" aria-labelledby="count-label">
+                  <button type="button" data-count="-1" aria-label="Fewer guests">−</button>
+                  <output data-count-value>2</output>
+                  <button type="button" data-count="1" aria-label="More guests">+</button>
+                </div>
+              </div>
+              <button class="btn btn-primary btn-block" type="submit">RSVP</button>
+              <p class="fine">RSVP by Sat 24 Oct</p>
+            </form>
+          )
+        }
+      </div>
+    )
+  }
+</div>
