@@ -1,0 +1,138 @@
+---
+import { includedItems, eventFaqs, schedule, defaultDraft } from "../content/copy";
+interface Props {
+  form?: "open" | "success" | "none";
+  idPrefix?: string;
+  lockedLayout?: "halloween" | "premium" | "run";
+}
+const { form = "none", idPrefix = "event", lockedLayout } = Astro.props;
+const draft = defaultDraft;
+const layout = lockedLayout ?? "halloween";
+---
+
+<article
+  class:list={["event-page", `layout-${layout}`]}
+  data-event-root={lockedLayout ? undefined : true}
+  data-layout={lockedLayout ?? draft.layout}
+>
+  <header class="event-hero" data-section="hero" data-layout-class>
+    <div>
+      <p class="event-tag" data-field="type-label">Halloween</p>
+      <h2 class="event-title" data-field="name">{draft.name}</h2>
+      <p class="module-tag" data-field="tagline">{draft.tagline}</p>
+      <p class="poster-line">
+        <span class="when" data-field="date">{draft.date}</span>
+        <span class="where" data-field="venue">{draft.venue}</span>
+      </p>
+      <dl class="fact-box" style="width:100%;max-width:calc(var(--d) * 360);font-size:var(--type-label);margin-top:var(--space-16)">
+        <div><dt>DATE</dt><dd data-field="date">{draft.date}</dd></div>
+        <div><dt>TIME</dt><dd data-field="time">{draft.time}</dd></div>
+        <div><dt>VENUE</dt><dd data-field="address">{draft.address}</dd></div>
+        <div><dt>HOST</dt><dd data-field="host">{draft.host}</dd></div>
+      </dl>
+      <p style="margin-top:var(--space-16)">
+        <a class="btn btn-primary" href="#rsvp" data-field="button">{draft.button}</a>
+      </p>
+    </div>
+    <div class="module-art" data-hero-art style="width:100%;aspect-ratio:4/5">
+      <span class="decor" aria-hidden="true"></span>
+      <span class="icon icon-image"></span>
+      <span>Hero image</span>
+    </div>
+  </header>
+
+  <div class="event-body">
+    <section data-section="details" aria-labelledby={`${idPrefix}-about`}>
+      <h3 id={`${idPrefix}-about`} class="facts-title">About the party</h3>
+      <p class="muted" data-field="tagline">{draft.tagline}</p>
+    </section>
+
+    <section data-section="included" aria-labelledby={`${idPrefix}-included`}>
+      <h3 id={`${idPrefix}-included`} class="facts-title">What’s included</h3>
+      <div class="include-list">
+        {
+          includedItems.map((item) => (
+            <article>
+              <span class="badge-num">{item.n}</span>
+              <h4>{item.title}</h4>
+              <p class="muted">{item.body}</p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section data-section="schedule" aria-labelledby={`${idPrefix}-schedule`}>
+      <h3 id={`${idPrefix}-schedule`} class="facts-title">Schedule</h3>
+      <ol class="schedule-list">
+        {
+          schedule.map((item, index) => (
+            <li>
+              <span class="badge-num">{String(index + 1).padStart(2, "0")}</span>
+              <span class="schedule-time">{item.time}</span>
+              <span class="schedule-label">{item.label}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section data-section="gallery" hidden aria-labelledby={`${idPrefix}-gallery`}>
+      <h3 id={`${idPrefix}-gallery`} class="facts-title">Gallery</h3>
+      <div class="soon-row">
+        <div class="module-art" style="width:100%;aspect-ratio:4/3"><span>Photo</span></div>
+        <div class="module-art" style="width:100%;aspect-ratio:4/3"><span>Photo</span></div>
+      </div>
+    </section>
+
+    <section data-section="location" aria-labelledby={`${idPrefix}-location`}>
+      <h3 id={`${idPrefix}-location`} class="facts-title">Location</h3>
+      <p class="row"><span class="icon icon-pin" style="color:var(--color-text-accent)"></span> <span data-field="address">{draft.address}</span></p>
+    </section>
+
+    <section data-section="faq" aria-labelledby={`${idPrefix}-faq`}>
+      <h3 id={`${idPrefix}-faq`} class="facts-title">FAQ</h3>
+      {
+        eventFaqs.map((item) => (
+          <details class="faq-item" style="margin-top:var(--space-12)">
+            <summary class="strong">{item.q}</summary>
+            <p class="muted">{item.a}</p>
+          </details>
+        ))
+      }
+    </section>
+
+    {
+      form !== "none" && (
+        <section data-section="rsvp" id="rsvp" aria-labelledby={`${idPrefix}-rsvp`}>
+          <h3 id={`${idPrefix}-rsvp`} class="facts-title" tabindex="-1">RSVP · {form === "success" ? "Success" : "Open"}</h3>
+          {form === "success" ? (
+            <div class="rsvp-box">
+              <p class="h2" style="font-size:var(--type-h2)">You’re on the list!</p>
+              <p class="muted">We’ll send details to the address you gave us. See you there.</p>
+            </div>
+          ) : (
+            <form class="rsvp-box" data-rsvp>
+              <p class="fine">01 / 03</p>
+              <label class="field">Name
+                <input name="name" autocomplete="name" placeholder="Your name" required />
+              </label>
+              <fieldset style="border:0;padding:0;margin:0">
+                <legend class="strong">Attending?</legend>
+                <div class="attend">
+                  <label class="btn btn-secondary"><input type="radio" name="attending" value="yes" checked /> Yes</label>
+                  <label class="btn btn-secondary"><input type="radio" name="attending" value="maybe" /> Maybe</label>
+                  <label class="btn btn-secondary"><input type="radio" name="attending" value="no" /> No</label>
+                </div>
+              </fieldset>
+              <label class="field">Guest count (including you)
+                <input name="count" type="number" min="1" value="2" />
+              </label>
+              <button class="btn btn-primary" type="submit" data-field="button">{draft.button}</button>
+            </form>
+          )}
+        </section>
+      )
+    }
+  </div>
+</article>

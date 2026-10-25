@@ -1,0 +1,48 @@
+---
+import Base from "../../layouts/Base.astro";
+import EventPage from "../../components/EventPage.astro";
+import ScaleBox from "../../components/ScaleBox.astro";
+import Provisional from "../../components/Provisional.astro";
+import Decision from "../../components/Decision.astro";
+import { domainDecision, eventLink } from "../../content/provisional";
+import "../../styles/global.css";
+---
+
+<Base title="Preview — Sidebite" description="Preview your draft. Free drafts can’t publish." demo>
+  <header class="flow-header">
+    <a class="logo" href="/">
+      <span class="logo-mark" aria-hidden="true"></span>
+      <span class="logo-word">Sidebite</span>
+    </a>
+    <a class="btn btn-secondary" href="/demo/editor">Back to editor</a>
+    <span class="pill">Draft</span>
+    <p class="hint desk">Free drafts can’t publish. Publish takes you to plan selection.</p>
+    <a class="btn btn-primary" href="/demo/account">Publish</a>
+  </header>
+  <main id="main" class="preview-page">
+    <Decision wide title="Domain name" body={domainDecision()} />
+    <Provisional title="URL pattern" body={`${eventLink("{slug}")}; own web address on Milestone.`} />
+    <div class="preview-pair">
+      <figure>
+        <figcaption id="desk-preview">Desktop · 1440</figcaption>
+        <div class="preview-frame preview-desk">
+          <ScaleBox width={1440} height={1833}>
+            <EventPage idPrefix="desk" form="open" />
+          </ScaleBox>
+        </div>
+      </figure>
+      <figure>
+        <figcaption id="phone-preview">Mobile · 390</figcaption>
+        <div class="phone-frame preview-phone">
+          <ScaleBox width={390} height={844} phone>
+            <EventPage idPrefix="phone" form="open" />
+          </ScaleBox>
+        </div>
+      </figure>
+    </div>
+  </main>
+</Base>
+<script>
+  import { applyDraft } from "../../scripts/draft";
+  applyDraft();
+</script>

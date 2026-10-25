@@ -1,0 +1,49 @@
+---
+import Base from "../../layouts/Base.astro";
+import EventPage from "../../components/EventPage.astro";
+import ScaleBox from "../../components/ScaleBox.astro";
+import Provisional from "../../components/Provisional.astro";
+import "../../styles/global.css";
+---
+
+<Base title="Create your account — Sidebite" description="Save your page with an email link or Google. This demo does not sign you in." demo>
+  <header class="flow-header">
+    <a class="logo" href="/">
+      <span class="logo-mark" aria-hidden="true"></span>
+      <span class="logo-word">Sidebite</span>
+    </a>
+    <p class="fine" style="margin-left:auto">Already have an account? <a class="btn btn-link" href="/pricing">Log in</a></p>
+  </header>
+  <main id="main" class="flow">
+    <div class="two">
+      <form class="account-card" id="account-form" action="/pricing">
+        <h1 class="h2">Save your page</h1>
+        <p class="lead">Create an account to keep your draft, publish it and see RSVPs as they arrive.</p>
+        <Provisional title="Sign-in: email magic link + Continue with Google" body="Guests never sign in. They RSVP straight from the link." />
+        <a class="btn btn-secondary btn-block" href="/pricing">Continue with Google</a>
+        <p class="or">or</p>
+        <label class="field">Email
+          <input type="email" name="email" value="you@example.com" autocomplete="email" required />
+        </label>
+        <button class="btn btn-primary" type="submit">Email me a sign-in link</button>
+        <p class="fine">No password: we email you a sign-in link. By continuing you agree to the Terms and Privacy Policy.</p>
+      </form>
+      <aside>
+        <p class="fine">Your draft is safe</p>
+        <div class="preview-frame" style="margin-top:var(--space-12)">
+          <ScaleBox width={1440} height={1200}>
+            <EventPage idPrefix="account" />
+          </ScaleBox>
+        </div>
+      </aside>
+    </div>
+  </main>
+</Base>
+<script>
+  import { applyDraft } from "../../scripts/draft";
+  applyDraft();
+  document.getElementById("account-form")?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    location.href = "/pricing";
+  });
+</script>

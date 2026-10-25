@@ -1,0 +1,135 @@
+---
+import Base from "../../layouts/Base.astro";
+import Provisional from "../../components/Provisional.astro";
+import { eventLink, keepLivePrice, money, provisional } from "../../content/provisional";
+import { defaultDraft, guests, upgradePrompts } from "../../content/copy";
+import "../../styles/global.css";
+---
+
+<Base title="Dashboard — Sidebite" description="Host dashboard mock. Counts and guests are sample copy." demo>
+  <div class="dash">
+    <nav class="sidenav" aria-label="Dashboard">
+      <a class="logo" href="/">
+        <span class="logo-mark" aria-hidden="true"></span>
+        <span class="logo-word">Sidebite</span>
+      </a>
+      <a href="/demo/dashboard" aria-current="page">Events</a>
+      <a href="#guests">Guests</a>
+      <a href="/#templates">Templates</a>
+      <a href="/demo/account">Account</a>
+    </nav>
+    <main id="main" class="dash-main">
+      <header class="split">
+        <div>
+          <h1 class="h2" data-field="name">{defaultDraft.name}</h1>
+          <p><span class="pill pill-solid">Live</span> Hosting until {defaultDraft.hostingUntil}</p>
+          <p class="fine"><a href="/e/demo">{eventLink(defaultDraft.slug)}</a></p>
+        </div>
+        <div class="row" style="flex-wrap:wrap">
+          <a class="btn btn-secondary" href="/demo/editor">Edit page</a>
+          <a class="btn btn-primary" href="#prompts">Message guests</a>
+        </div>
+      </header>
+      <Provisional title="Message guests: updates and reminders from you, Milestone only" body="Dev note: needs legal sign-off before launch; include unsubscribe links and a privacy notice." />
+      <section class="stats" aria-label="Snapshot">
+        <article class="stat"><span class="fine">Going</span><b>42</b></article>
+        <article class="stat"><span class="fine">Maybe</span><b>9</b></article>
+        <article class="stat"><span class="fine">Can’t go</span><b>5</b></article>
+        <article class="stat"><span class="fine">Page views</span><b>318</b></article>
+      </section>
+      <section class="card hosting" style="padding:var(--space-20)">
+        <div class="split">
+          <h2 class="facts-title">Hosting</h2>
+          <span class="pill">Live until {defaultDraft.hostingShort}</span>
+        </div>
+        <p class="muted">Included until 1 month after your event. Keep it live after that for {keepLivePrice()}.</p>
+        <div class="split">
+          <p>Keep it live</p>
+          <button class="switch" type="button" role="switch" aria-checked="false" aria-label="Keep it live" data-keep-live>
+            <i></i>
+          </button>
+        </div>
+        <fieldset style="border:0;padding:0;margin-top:var(--space-12)">
+          <legend class="fine">Takedown warnings by</legend>
+          <div class="chip-row" data-segment>
+            <button class="chip" type="button" aria-pressed="false">Email</button>
+            <button class="chip" type="button" aria-pressed="false">Text</button>
+            <button class="chip" type="button" aria-pressed="true">Both</button>
+          </div>
+        </fieldset>
+      </section>
+      <section id="guests" class="table-card" aria-labelledby="rsvp-label">
+        <div class="split">
+          <h2 id="rsvp-label" class="facts-title">RSVPs</h2>
+          <a class="btn btn-link" href="#guests">Download guest list</a>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>NAME</th><th>EMAIL</th><th>STATUS</th><th>NOTE</th></tr>
+            </thead>
+            <tbody>
+              {
+                guests.map((guest) => (
+                  <tr>
+                    <td>{guest.name}</td>
+                    <td><a href={`mailto:${guest.email}`}>{guest.email}</a></td>
+                    <td><span class:list={["pill", "status-pill", guest.status !== "Going" && "pill-muted"]}>{guest.status}</span></td>
+                    <td>{guest.note}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section id="prompts" aria-labelledby="upgrade-label">
+        <h2 id="upgrade-label" class="facts-title">Upgrade prompts</h2>
+        <p class="fine">Prompt rules · prices {money(provisional.prices.gather)} / {money(provisional.prices.celebrate)} / {money(provisional.prices.milestone)}</p>
+        <div class="prompts">
+          {
+            upgradePrompts.map((prompt) => (
+              <article class="card" style="padding:var(--space-20);display:flex;flex-direction:column;gap:var(--space-12)">
+                <p class="fine">{prompt.n}</p>
+                <h3 class="facts-title">{prompt.title}</h3>
+                <p class="muted">{prompt.body}</p>
+                {"extra" in prompt && prompt.extra && <p class="muted">{prompt.extra}</p>}
+                <div class="row" style="flex-wrap:wrap">
+                  <a class="btn btn-primary" href={prompt.primaryHref}>{prompt.primary}</a>
+                  {"secondary" in prompt && prompt.secondary ? (
+                    <a class="btn btn-secondary" href="#guests">{prompt.secondary}</a>
+                  ) : (
+                    <button class="btn btn-secondary" type="button" data-dismiss>Not now</button>
+                  )}
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+    </main>
+  </div>
+</Base>
+<script>
+  import { applyDraft } from "../../scripts/draft";
+  applyDraft();
+  document.querySelector<HTMLButtonElement>("[data-keep-live]")?.addEventListener("click", (event) => {
+    const button = event.currentTarget as HTMLButtonElement;
+    const on = button.getAttribute("aria-checked") !== "true";
+    button.setAttribute("aria-checked", String(on));
+  });
+  document.querySelectorAll("[data-segment]").forEach((group) => {
+    group.addEventListener("click", (event) => {
+      const button = (event.target as HTMLElement).closest("button");
+      if (!button) return;
+      group.querySelectorAll("button").forEach((other) => {
+        other.setAttribute("aria-pressed", String(other === button));
+      });
+    });
+  });
+  document.querySelectorAll("[data-dismiss]").forEach((button) => {
+    button.addEventListener("click", () => {
+      button.closest("article")?.setAttribute("hidden", "");
+    });
+  });
+</script>

@@ -1,0 +1,58 @@
+---
+interface Props {
+  step?: 1 | 2 | 3 | 4;
+  save?: boolean;
+  editor?: boolean;
+}
+const { step, save = false, editor = false } = Astro.props;
+const steps = [
+  { n: 1, label: "Event type" },
+  { n: 2, label: "Basics" },
+  { n: 3, label: "Look" },
+  { n: 4, label: "Customize" },
+];
+---
+
+<header class:list={["flow-header", editor && "editor-header"]}>
+  <a class="logo" href="/">
+    <span class="logo-mark" aria-hidden="true"></span>
+    <span class="logo-word">Sidebite</span>
+  </a>
+  {
+    step && (
+      <p class="mob progress-label">
+        <span>Step {step} of 4</span>
+        <span class="progress-segs" aria-hidden="true">
+          {steps.map((item) => <i class:list={[item.n <= step && "on"]} />)}
+        </span>
+      </p>
+    )
+  }
+  {
+    step && (
+      <ol class="stepper desk" aria-label="Progress">
+        {steps.map((item) => (
+          <li class:list={[item.n === step && "on", step > item.n && "done"]}>
+            <span class="step-dot">{step > item.n ? "✓" : item.n}</span>
+            {item.label}
+          </li>
+        ))}
+      </ol>
+    )
+  }
+  <div class="row" style="margin-left:auto">
+    {save && <span class="fine desk">Saved · just now</span>}
+    {save && <span class="fine mob">Saved</span>}
+    {
+      editor && (
+        <>
+          <a class="btn btn-secondary desk" href="/demo/preview">Preview</a>
+          <a class="btn btn-primary desk" href="/demo/preview">Publish</a>
+        </>
+      )
+    }
+    {step && !editor && (
+      <a class="btn btn-link desk" href="/">Save &amp; exit</a>
+    )}
+  </div>
+</header>

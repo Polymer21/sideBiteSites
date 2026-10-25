@@ -1,0 +1,137 @@
+---
+import Base from "../../layouts/Base.astro";
+import FlowHeader from "../../components/FlowHeader.astro";
+import EventPage from "../../components/EventPage.astro";
+import PremiumHero from "../../components/PremiumHero.astro";
+import Provisional from "../../components/Provisional.astro";
+import ScaleBox from "../../components/ScaleBox.astro";
+import "../../styles/global.css";
+
+const layouts = [
+  { id: "halloween", name: "Halloween", note: "Parties and seasonal nights" },
+  { id: "premium", name: "Premium", note: "Milestone" },
+  { id: "run", name: "Run Club", note: "Weekly runs and meetups" },
+];
+const palettes = [
+  { id: "tripletree", name: "TripleTee" },
+  { id: "default", name: "Default" },
+  { id: "premium", name: "Premium" },
+];
+---
+
+<Base title="Template and palette — Sidebite" description="Choose a look. Layout sets the structure. Palette sets the colours." demo>
+  <FlowHeader step={3} />
+  <main id="main" class="look-page">
+    <div class="look">
+      <div class="look-panel">
+        <header>
+          <h1 class="h2">Choose a look</h1>
+          <p class="lead">Layout sets the structure. Palette sets the colours.</p>
+        </header>
+        <section aria-labelledby="layout-label">
+          <h2 id="layout-label" class="strong">Layout</h2>
+          <div class="layout-grid">
+            {
+              layouts.map((layout) => (
+                <div class="layout-card" role="button" tabindex="0" data-layout={layout.id} aria-pressed={layout.id === "halloween" ? "true" : "false"}>
+                  <span class="layout-thumb" data-frozen>
+                    <ScaleBox width={1440} height={860}>
+                      {layout.id === "premium" ? (
+                        <PremiumHero />
+                      ) : (
+                        <EventPage idPrefix={`thumb-${layout.id}`} lockedLayout={layout.id === "run" ? "run" : "halloween"} />
+                      )}
+                    </ScaleBox>
+                  </span>
+                  <span class="layout-name">
+                    <span class="strong">{layout.name}</span>
+                    <span class="icon icon-check" aria-hidden="true" />
+                    {layout.id === "premium" && <span class="pill">Milestone</span>}
+                  </span>
+                </div>
+              ))
+            }
+            <div class="soon layout-soon">
+              <p class="strong">More layouts</p>
+              <p class="fine">Run club Oct 23 · Tech meetup Oct 26 · Nightlife Oct 28 · Wedding Oct 30</p>
+            </div>
+          </div>
+        </section>
+        <section aria-labelledby="palette-label">
+          <h2 id="palette-label" class="strong">Palette</h2>
+          <div class="chip-row">
+            {
+              palettes.map((palette) => (
+                <button class="chip" type="button" data-palette-choice={palette.id} aria-pressed={palette.id === "tripletree" ? "true" : "false"}>
+                  {palette.name}
+                </button>
+              ))
+            }
+          </div>
+          <Provisional title="Premium template: Milestone only" body="" />
+        </section>
+        <div class="actions">
+          <a class="btn btn-secondary" href="/demo/event-basics">Back</a>
+          <a class="btn btn-primary" href="/demo/editor">Use this look</a>
+        </div>
+      </div>
+      <div class="look-preview">
+        <div class="split">
+          <p class="strong">Live preview</p>
+          <div class="device-toggle" role="group" aria-label="Preview width">
+            <button class="chip" type="button" data-device="desktop" aria-pressed="true">Desktop</button>
+            <button class="chip" type="button" data-device="phone" aria-pressed="false">Mobile</button>
+          </div>
+        </div>
+        <div class="preview-frame" id="look-preview">
+          <ScaleBox width={1440} height={1340}>
+            <EventPage idPrefix="look" />
+          </ScaleBox>
+        </div>
+      </div>
+    </div>
+  </main>
+</Base>
+<script>
+  import { readDraft, writeDraft, applyDraft } from "../../scripts/draft";
+  const draft = readDraft();
+  const press = (selector: string, attr: string, value: string) => {
+    document.querySelectorAll<HTMLElement>(selector).forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.getAttribute(attr) === value));
+    });
+  };
+  press("[data-layout]", "data-layout", draft.layout);
+  press("[data-palette-choice]", "data-palette-choice", draft.palette);
+  document.querySelectorAll<HTMLElement>("[data-layout]").forEach((button) => {
+    const choose = () => {
+      const layout = button.dataset.layout as "halloween" | "premium" | "run";
+      writeDraft({ layout });
+      press("[data-layout]", "data-layout", layout);
+      applyDraft();
+    };
+    button.addEventListener("click", choose);
+    button.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        choose();
+      }
+    });
+  });
+  document.querySelectorAll<HTMLButtonElement>("[data-palette-choice]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const palette = button.dataset.paletteChoice as "tripletree" | "default" | "premium";
+      writeDraft({ palette });
+      press("[data-palette-choice]", "data-palette-choice", palette);
+      applyDraft();
+    });
+  });
+  const preview = document.getElementById("look-preview");
+  document.querySelectorAll<HTMLButtonElement>("[data-device]").forEach((button) => {
+    button.addEventListener("click", () => {
+      document.querySelectorAll<HTMLButtonElement>("[data-device]").forEach((other) => {
+        other.setAttribute("aria-pressed", String(other === button));
+      });
+      preview?.classList.toggle("is-phone", button.dataset.device === "phone");
+    });
+  });
+</script>

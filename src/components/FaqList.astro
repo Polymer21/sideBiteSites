@@ -1,0 +1,34 @@
+---
+import Icon from "./Icon.astro";
+import { marketingFaq } from "../content/copy";
+---
+
+<div class="faq-list">
+  {
+    marketingFaq.map((item) => (
+      <div class:list={["faq-item", !item.mobile && "desk"]} data-faq>
+        <h3>
+          <button type="button" aria-expanded="false" aria-controls={`faq-${item.id}`} id={`faq-q-${item.id}`}>
+            <span>{item.q}</span>
+            <Icon name="plus" />
+          </button>
+        </h3>
+        <p id={`faq-${item.id}`} role="region" aria-labelledby={`faq-q-${item.id}`} hidden>
+          {item.a}
+        </p>
+      </div>
+    ))
+  }
+</div>
+<script>
+  document.querySelectorAll("[data-faq]").forEach((item) => {
+    const button = item.querySelector("button");
+    const panel = item.querySelector("p");
+    if (!button || !panel) return;
+    button.addEventListener("click", () => {
+      const open = button.getAttribute("aria-expanded") === "true";
+      button.setAttribute("aria-expanded", String(!open));
+      panel.hidden = open;
+    });
+  });
+</script>

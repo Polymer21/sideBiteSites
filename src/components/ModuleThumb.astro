@@ -1,0 +1,32 @@
+---
+interface Props {
+  font: "figtree" | "grotesk";
+}
+const { font } = Astro.props;
+---
+
+<div class="module-hero">
+  <div class="module-copy">
+    <span class="event-tag"><span class="icon icon-pumpkin" style="width:1.2em;height:1.2em"></span>{"{Event Type}"}</span>
+    <p class:list={["module-title", font === "figtree" ? "font-figtree" : "font-grotesk"]}>{"{Event Name}"}</p>
+    <p class:list={["module-tag", font === "figtree" ? "font-figtree" : "font-grotesk"]}>{"{Event Tagline}"}</p>
+    <p class:list={["poster-line", font === "figtree" ? "font-figtree" : "font-grotesk"]}>
+      <span class="when">{"{Event Date}"}</span>
+      <span class="where">{"{Venue Name}"}</span>
+    </p>
+    <div class="facts">
+      <dl class="fact-box">
+        <div><dt>DATE</dt><dd>{"{Event Date}"}</dd></div>
+        <div><dt>TIME</dt><dd>{"{Start} – {End}"}</dd></div>
+        <div><dt>VENUE</dt><dd>{"{Venue}, {City}"}</dd></div>
+        <div><dt>HOST</dt><dd>{"{Host Name}"}</dd></div>
+      </dl>
+      <span class:list={["mini-rsvp", font === "grotesk" ? "font-grotesk" : "font-figtree"]}>RSVP</span>
+    </div>
+  </div>
+  <div class="module-art">
+    <span class="decor" aria-hidden="true"></span>
+    <span class="icon icon-image"></span>
+    <span>{"{Hero Image Alt}"}</span>
+  </div>
+</div>

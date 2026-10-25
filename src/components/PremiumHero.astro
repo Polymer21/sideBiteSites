@@ -1,0 +1,25 @@
+---
+interface Props {
+  phone?: boolean;
+}
+const { phone = false } = Astro.props;
+---
+
+<div class:list={["premium-hero", phone && "is-phone"]}>
+  <div class="premium-top">
+    <span class="mono">E &amp; J</span>
+    <span class="mini-nav" aria-hidden="true">
+      <span>Details</span><span>Schedule</span><span>Travel</span><span>FAQ</span>
+    </span>
+    <span class="rsvp-link">RSVP</span>
+  </div>
+  <div>
+    <p class="ph">[Image placeholder — full-bleed photo or video]</p>
+    <p class="names">Eleanor &amp; James</p>
+    <p class="meta">Saturday, 12 June 2027 · The Orchard House, Hudson Valley</p>
+    <div class="pill-arrow">
+      <span>RSVP</span>
+      <span class="round-arrow" aria-hidden="true"><span class="icon icon-arrow icon-sm"></span></span>
+    </div>
+  </div>
+</div>

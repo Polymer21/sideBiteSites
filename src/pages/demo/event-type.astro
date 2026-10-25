@@ -1,0 +1,67 @@
+---
+import Base from "../../layouts/Base.astro";
+import FlowHeader from "../../components/FlowHeader.astro";
+import Icon from "../../components/Icon.astro";
+import { eventTypes } from "../../content/copy";
+import "../../styles/global.css";
+---
+
+<Base title="Event type — Sidebite" description="What are you hosting?" demo>
+  <FlowHeader step={1} />
+  <main id="main" class="flow">
+    <form class="flow-narrow" id="type-form" action="/demo/event-basics">
+      <header>
+        <h1 class="h2">What are you hosting?</h1>
+        <p class="lead">We’ll suggest a layout and palette. You can change everything later.</p>
+      </header>
+      <div class="type-grid" role="group" aria-label="Event types">
+        {
+          eventTypes.map((type) => (
+            <button
+              class="card type-card"
+              type="button"
+              data-type={type.id}
+              data-coming={type.coming ? "true" : "false"}
+              aria-pressed={type.id === "halloween" ? "true" : "false"}
+              aria-disabled={type.coming ? "true" : "false"}
+            >
+              <Icon name={type.icon} />
+              <span class="facts-title">{type.name}</span>
+              <span class="muted">{type.body}</span>
+              {type.coming && <span class="fine">{type.coming}</span>}
+            </button>
+          ))
+        }
+      </div>
+      <div class="actions">
+        <a class="btn btn-secondary" href="/">Back</a>
+        <button class="btn btn-primary" type="submit">Continue</button>
+      </div>
+    </form>
+  </main>
+</Base>
+<script>
+  import { readDraft, writeDraft } from "../../scripts/draft";
+  const draft = readDraft();
+  const buttons = [...document.querySelectorAll<HTMLButtonElement>("[data-type]")];
+  const select = (id: string) => {
+    buttons.forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.dataset.type === id));
+    });
+    writeDraft({ eventType: id });
+  };
+  buttons.forEach((button) => {
+    if (button.dataset.type === draft.eventType) button.setAttribute("aria-pressed", "true");
+    button.addEventListener("click", () => {
+      if (button.dataset.coming === "true") return;
+      select(button.dataset.type || "halloween");
+    });
+  });
+  document.getElementById("type-form")?.addEventListener("submit", (event) => {
+    const chosen = buttons.find((button) => button.getAttribute("aria-pressed") === "true" && button.dataset.coming !== "true");
+    if (!chosen) {
+      event.preventDefault();
+      buttons[0]?.focus();
+    }
+  });
+</script>

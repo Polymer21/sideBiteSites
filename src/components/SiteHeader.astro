@@ -1,0 +1,23 @@
+---
+interface Props {
+  current?: "pricing" | "home";
+}
+const { current } = Astro.props;
+---
+
+<header class="site-header">
+  <a class="logo" href="/">
+    <span class="logo-mark" aria-hidden="true"></span>
+    <span class="logo-word">Sidebite</span>
+  </a>
+  <nav class="site-nav desk" aria-label="Primary">
+    <div class="site-links">
+      <a href="/#templates">Templates</a>
+      <a href="/pricing" aria-current={current === "pricing" ? "page" : undefined}>Pricing</a>
+      <a href="/#how">How it works</a>
+      <a href="/demo/account">Log in</a>
+    </div>
+    <a class="btn btn-primary" href="/demo/event-type">Create your page</a>
+  </nav>
+  <a class="btn btn-primary mob" href="/demo/event-type">Start free</a>
+</header>
