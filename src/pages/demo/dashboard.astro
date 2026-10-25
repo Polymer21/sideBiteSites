@@ -37,11 +37,18 @@ import "../../styles/global.css";
         <article class="stat"><span class="fine">Can’t go</span><b>5</b></article>
         <article class="stat"><span class="fine">Page views</span><b>318</b></article>
       </section>
-      <section class="card" style="padding:var(--space-20)">
-        <h2 class="facts-title">Hosting</h2>
-        <p>Live until {defaultDraft.hostingShort}</p>
+      <section class="card hosting" style="padding:var(--space-20)">
+        <div class="split">
+          <h2 class="facts-title">Hosting</h2>
+          <span class="pill">Live until {defaultDraft.hostingShort}</span>
+        </div>
         <p class="muted">Included until 1 month after your event. Keep it live after that for {keepLivePrice()}.</p>
-        <a class="btn btn-secondary" href="/demo/checkout?tier=celebrate">Keep it live</a>
+        <div class="split">
+          <p>Keep it live</p>
+          <button class="switch" type="button" role="switch" aria-checked="false" aria-label="Keep it live" data-keep-live>
+            <i></i>
+          </button>
+        </div>
         <fieldset style="border:0;padding:0;margin-top:var(--space-12)">
           <legend class="fine">Takedown warnings by</legend>
           <div class="chip-row" data-segment>
@@ -106,6 +113,11 @@ import "../../styles/global.css";
 <script>
   import { applyDraft } from "../../scripts/draft";
   applyDraft();
+  document.querySelector<HTMLButtonElement>("[data-keep-live]")?.addEventListener("click", (event) => {
+    const button = event.currentTarget as HTMLButtonElement;
+    const on = button.getAttribute("aria-checked") !== "true";
+    button.setAttribute("aria-checked", String(on));
+  });
   document.querySelectorAll("[data-segment]").forEach((group) => {
     group.addEventListener("click", (event) => {
       const button = (event.target as HTMLElement).closest("button");

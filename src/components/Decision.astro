@@ -1,0 +1,16 @@
+---
+interface Props {
+  title: string;
+  body: string;
+  wide?: boolean;
+}
+const { title, body, wide = false } = Astro.props;
+---
+
+<aside class:list={["decision", wide && "is-wide"]}>
+  <p class="pill pill-error">DECISION NEEDED</p>
+  <div>
+    <p class="strong">{title}</p>
+    {body && <p class="muted">{body}</p>}
+  </div>
+</aside>

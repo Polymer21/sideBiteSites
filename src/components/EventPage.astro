@@ -54,10 +54,8 @@ const layout = lockedLayout ?? "halloween";
           includedItems.map((item) => (
             <article>
               <span class="badge-num">{item.n}</span>
-              <div>
-                <h4 class="strong">{item.title}</h4>
-                <p class="muted">{item.body}</p>
-              </div>
+              <h4>{item.title}</h4>
+              <p class="muted">{item.body}</p>
             </article>
           ))
         }
@@ -66,12 +64,20 @@ const layout = lockedLayout ?? "halloween";
 
     <section data-section="schedule" aria-labelledby={`${idPrefix}-schedule`}>
       <h3 id={`${idPrefix}-schedule`} class="facts-title">Schedule</h3>
-      <ul class="features">
-        {schedule.map((item) => <li><span class="strong">{item.time}</span> {item.label}</li>)}
-      </ul>
+      <ol class="schedule-list">
+        {
+          schedule.map((item, index) => (
+            <li>
+              <span class="badge-num">{String(index + 1).padStart(2, "0")}</span>
+              <span class="schedule-time">{item.time}</span>
+              <span class="schedule-label">{item.label}</span>
+            </li>
+          ))
+        }
+      </ol>
     </section>
 
-    <section data-section="gallery" aria-labelledby={`${idPrefix}-gallery`}>
+    <section data-section="gallery" hidden aria-labelledby={`${idPrefix}-gallery`}>
       <h3 id={`${idPrefix}-gallery`} class="facts-title">Gallery</h3>
       <div class="soon-row">
         <div class="module-art" style="width:100%;aspect-ratio:4/3"><span>Photo</span></div>

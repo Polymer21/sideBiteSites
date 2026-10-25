@@ -27,7 +27,7 @@ import "../../styles/global.css";
                 <span class="name">{section.label}</span>
                 <button class="icon-btn" type="button" data-move="up" aria-label={`Move ${section.label} up`} disabled={index === 0}>↑</button>
                 <button class="icon-btn" type="button" data-move="down" aria-label={`Move ${section.label} down`} disabled={index === sections.length - 1}>↓</button>
-                <button class="switch" type="button" role="switch" aria-checked="true" aria-label={`Show ${section.label}`} data-toggle={section.id}>
+                <button class="switch" type="button" role="switch" aria-checked={section.id === "gallery" ? "false" : "true"} aria-label={`Show ${section.label}`} data-toggle={section.id}>
                   <i></i>
                 </button>
               </li>

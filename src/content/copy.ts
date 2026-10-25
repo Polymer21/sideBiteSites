@@ -133,7 +133,7 @@ export const defaultDraft = {
   layout: "halloween" as "halloween" | "premium" | "run",
   palette: "tripletree" as "tripletree" | "default" | "premium",
   tier: "celebrate" as "free" | "gather" | "celebrate" | "milestone",
-  hidden: [] as SectionId[],
+  hidden: ["gallery"] as SectionId[],
   slug: "spooky-soiree",
   hostingUntil: "30 Nov 2026",
   hostingShort: "30 Nov",

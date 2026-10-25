@@ -37,6 +37,11 @@ export function eventLink(slug: string): string {
   return `${provisional.domain}/e/${slug}`;
 }
 
+/** Red “decision needed” copy from the preview and guest frames. */
+export function domainDecision(): string {
+  return `Links show as ${eventLink("your-event")} until the domain is chosen. Pattern: sidebite.{domain}/e/{slug}.`;
+}
+
 export const milestoneFeatures = [
   "Everything in Celebrate",
   "Premium template",

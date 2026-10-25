@@ -7,11 +7,11 @@ const KEY = "sidebite-draft";
 export function readDraft(): Draft {
   try {
     const raw = sessionStorage.getItem(KEY);
-    if (!raw) return { ...defaultDraft, hidden: [] };
+    if (!raw) return { ...defaultDraft, hidden: [...defaultDraft.hidden] };
     const parsed = JSON.parse(raw) as Partial<Draft>;
     return { ...defaultDraft, ...parsed, hidden: parsed.hidden ?? [] };
   } catch {
-    return { ...defaultDraft, hidden: [] };
+    return { ...defaultDraft, hidden: [...defaultDraft.hidden] };
   }
 }
 
