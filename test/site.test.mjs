@@ -39,6 +39,122 @@ test("components do not hardcode colors", async () => {
   }
 });
 
+const paletteTokens = {
+  default: {
+    "--color-bg-page": "#ffffff",
+    "--color-bg-section": "#f7f7f8",
+    "--color-bg-surface": "#ffffff",
+    "--color-bg-input": "#ffffff",
+    "--color-bg-muted": "#e4e4e7",
+    "--color-bg-footer": "#18181b",
+    "--color-accent": "#2563eb",
+    "--color-accent-subtle": "#dbeafe",
+    "--color-text-primary": "#18181b",
+    "--color-text-secondary": "#52525b",
+    "--color-text-on-accent": "#ffffff",
+    "--color-text-accent": "#1d4ed8",
+    "--color-border-default": "#71717a",
+    "--color-bg-hero-start": "#dbeafe",
+    "--color-accent-hover": "#1d4ed8",
+    "--color-text-placeholder": "#52525b",
+    "--color-text-error": "#dc2626",
+    "--color-border-input": "#71717a",
+    "--color-border-focus": "#2563eb",
+    "--color-border-error": "#dc2626",
+    "--color-text-on-footer": "#e4e4e7",
+    "--color-text-on-footer-accent": "#dbeafe",
+    "--color-accent-pressed": "#1e40af",
+    "--color-bg-disabled": "#f4f4f5",
+    "--color-text-disabled": "#6b7280",
+    "--color-border-disabled": "#e4e4e7",
+    "--color-text-secondary-on-surface": "#52525b",
+    "--color-text-accent-on-surface": "#1d4ed8",
+    "--color-text-on-hero": "#18181b",
+    "--color-text-accent-on-hero": "#1d4ed8",
+    "--color-text-secondary-on-hero": "#52525b",
+    "--color-text-on-dark-surface": "#e4e4e7",
+  },
+  tripletree: {
+    "--color-bg-page": "#fcfbfa",
+    "--color-bg-section": "#f7f6f3",
+    "--color-bg-surface": "#d8d1c4",
+    "--color-bg-input": "#fcfbfa",
+    "--color-bg-muted": "#d8d1c4",
+    "--color-bg-footer": "#1a3820",
+    "--color-accent": "#426849",
+    "--color-accent-subtle": "#f0f3f0",
+    "--color-text-primary": "#1a3820",
+    "--color-text-secondary": "#656e4f",
+    "--color-text-on-accent": "#fcfbfa",
+    "--color-text-accent": "#426849",
+    "--color-border-default": "#656e4f",
+    "--color-bg-hero-start": "#f0eee9",
+    "--color-accent-hover": "#2e4933",
+    "--color-text-placeholder": "#505242",
+    "--color-text-error": "#b42318",
+    "--color-border-input": "#656e4f",
+    "--color-border-focus": "#426849",
+    "--color-border-error": "#b42318",
+    "--color-text-on-footer": "#e8e4dd",
+    "--color-text-on-footer-accent": "#c0c2b1",
+    "--color-accent-pressed": "#243928",
+    "--color-bg-disabled": "#f0eee9",
+    "--color-text-disabled": "#77736c",
+    "--color-border-disabled": "#d8d1c4",
+    "--color-text-secondary-on-surface": "#383c2b",
+    "--color-text-accent-on-surface": "#2e4933",
+    "--color-text-on-hero": "#1a3820",
+    "--color-text-accent-on-hero": "#426849",
+    "--color-text-secondary-on-hero": "#656e4f",
+    "--color-text-on-dark-surface": "#e8e4dd",
+  },
+  premium: {
+    "--color-bg-page": "#f4efe6",
+    "--color-bg-section": "#ece5d8",
+    "--color-bg-surface": "#fbf8f2",
+    "--color-bg-input": "#fbf8f2",
+    "--color-bg-muted": "#e4dccd",
+    "--color-bg-footer": "#e4dccd",
+    "--color-accent": "#4f5b43",
+    "--color-accent-subtle": "#e4e6da",
+    "--color-text-primary": "#26221d",
+    "--color-text-secondary": "#5b5246",
+    "--color-text-on-accent": "#fbf8f2",
+    "--color-text-accent": "#4f5b43",
+    "--color-border-default": "#8a7f70",
+    "--color-bg-hero-start": "#6f6658",
+    "--color-accent-hover": "#3e4834",
+    "--color-text-placeholder": "#6e6558",
+    "--color-text-error": "#9a3324",
+    "--color-border-input": "#7c7163",
+    "--color-border-focus": "#4f5b43",
+    "--color-border-error": "#9a3324",
+    "--color-text-on-footer": "#26221d",
+    "--color-text-on-footer-accent": "#4f5b43",
+    "--color-accent-pressed": "#333b2b",
+    "--color-bg-disabled": "#e4dccd",
+    "--color-text-disabled": "#7a7062",
+    "--color-border-disabled": "#b8ae9f",
+    "--color-text-secondary-on-surface": "#5b5246",
+    "--color-text-accent-on-surface": "#4f5b43",
+    "--color-text-on-hero": "#fbf8f2",
+    "--color-text-accent-on-hero": "#ffffff",
+    "--color-text-secondary-on-hero": "#fbf8f2",
+    "--color-text-on-dark-surface": "#26221d",
+  },
+};
+
+function paletteBlock(css, id) {
+  const match = css.match(new RegExp(`\\[data-palette="${id}"\\]\\s*\\{([^}]+)\\}`));
+  assert.ok(match, `missing palette ${id}`);
+  const values = {};
+  for (const line of match[1].split("\n")) {
+    const token = line.match(/(--color-[\w-]+):\s*(#[0-9a-fA-F]{6})/);
+    if (token) values[token[1]] = token[2].toLowerCase();
+  }
+  return values;
+}
+
 test("default palette tokens and responsive unit are defined", async () => {
   const css = await readFile(path.join(root, "src/styles/global.css"), "utf8");
   assert.match(css, /\[data-palette="default"\]/);
@@ -48,14 +164,11 @@ test("default palette tokens and responsive unit are defined", async () => {
   assert.match(css, /100vw \/ 390/);
   assert.match(css, /100svh/);
   assert.match(css, /clamp\(/);
-  for (const token of [
-    "--color-accent:#426849",
-    "--color-bg-page:#fcfbfa",
-    "--color-bg-footer:#1a3820",
-    "--color-text-primary:#1a3820",
-  ]) {
-    const [name, value] = token.split(":");
-    assert.match(css, new RegExp(`${name}:\\s*${value}`));
+  assert.match(css, /--color-focus-ring:\s*var\(--color-border-focus\)/);
+  for (const id of Object.keys(paletteTokens)) {
+    const values = paletteBlock(css, id);
+    assert.equal(Object.keys(values).length, 32, `${id} should declare 32 color tokens`);
+    assert.deepEqual(values, paletteTokens[id]);
   }
 });
 
@@ -76,20 +189,41 @@ function contrast(fg, bg) {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
-test("default text pairs meet WCAG AA", () => {
-  const pairs = [
-    ["#1a3820", "#fcfbfa"],
-    ["#656e4f", "#fcfbfa"],
-    ["#656e4f", "#f7f6f3"],
-    ["#fcfbfa", "#426849"],
-    ["#e8e4dd", "#1a3820"],
-    ["#fbf8f2", "#6f6658"],
-    ["#1a3820", "#f0eee9"],
-    ["#426849", "#f0f3f0"],
-  ];
-  for (const [fg, bg] of pairs) {
-    const ratio = contrast(fg, bg);
-    assert.ok(ratio >= 4.5, `${fg} on ${bg} is ${ratio.toFixed(2)}`);
+const textPairs = [
+  ["--color-text-primary", "--color-bg-page"],
+  ["--color-text-secondary", "--color-bg-page"],
+  ["--color-text-primary", "--color-bg-section"],
+  ["--color-text-secondary", "--color-bg-section"],
+  ["--color-text-primary", "--color-bg-surface"],
+  ["--color-text-secondary-on-surface", "--color-bg-surface"],
+  ["--color-text-accent-on-surface", "--color-bg-surface"],
+  ["--color-text-on-accent", "--color-accent"],
+  ["--color-text-on-accent", "--color-accent-hover"],
+  ["--color-text-on-accent", "--color-accent-pressed"],
+  ["--color-text-on-accent", "--color-text-error"],
+  ["--color-text-error", "--color-bg-page"],
+  ["--color-text-error", "--color-bg-input"],
+  ["--color-text-on-footer", "--color-bg-footer"],
+  ["--color-text-on-footer-accent", "--color-bg-footer"],
+  ["--color-text-on-hero", "--color-bg-hero-start"],
+  ["--color-text-secondary-on-hero", "--color-bg-hero-start"],
+  ["--color-text-accent-on-hero", "--color-bg-hero-start"],
+  ["--color-text-placeholder", "--color-bg-input"],
+  ["--color-text-accent", "--color-accent-subtle"],
+  ["--color-text-accent", "--color-bg-disabled"],
+  ["--color-text-primary", "--color-bg-muted"],
+  ["--color-text-primary", "--color-accent-subtle"],
+  ["--color-text-secondary", "--color-accent-subtle"],
+];
+
+test("palette text pairs meet WCAG AA", async () => {
+  const css = await readFile(path.join(root, "src/styles/global.css"), "utf8");
+  for (const id of Object.keys(paletteTokens)) {
+    const values = paletteBlock(css, id);
+    for (const [foreground, background] of textPairs) {
+      const ratio = contrast(values[foreground], values[background]);
+      assert.ok(ratio >= 4.5, `${id} ${foreground} on ${background} is ${ratio.toFixed(2)}`);
+    }
   }
 });
 
@@ -122,6 +256,7 @@ test("built routes exist", async () => {
   }
   const home = await readFile(path.join(root, "dist/index.html"), "utf8");
   const pricing = await readFile(path.join(root, "dist/pricing/index.html"), "utf8");
+  assert.match(home, /data-palette="tripletree"/);
   assert.match(home, /Your event page, live in minutes/);
   assert.match(pricing, /PROVISIONAL/);
   assert.match(pricing, /\$0/);

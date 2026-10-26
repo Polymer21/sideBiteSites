@@ -33,7 +33,7 @@ const palettes = [
           <div class="layout-grid">
             {
               layouts.map((layout) => (
-                <div class="layout-card" role="button" tabindex="0" data-layout={layout.id} aria-pressed={layout.id === "halloween" ? "true" : "false"}>
+                <div class="layout-card">
                   <span class="layout-thumb" data-frozen>
                     <ScaleBox width={1440} height={860}>
                       {layout.id === "premium" ? (
@@ -43,11 +43,11 @@ const palettes = [
                       )}
                     </ScaleBox>
                   </span>
-                  <span class="layout-name">
+                  <button class="layout-name" type="button" data-layout={layout.id} aria-pressed={layout.id === "halloween" ? "true" : "false"}>
                     <span class="strong">{layout.name}</span>
                     <span class="icon icon-check" aria-hidden="true" />
                     {layout.id === "premium" && <span class="pill">Milestone</span>}
-                  </span>
+                  </button>
                 </div>
               ))
             }
@@ -100,21 +100,14 @@ const palettes = [
       button.setAttribute("aria-pressed", String(button.getAttribute(attr) === value));
     });
   };
-  press("[data-layout]", "data-layout", draft.layout);
+  press("button[data-layout]", "data-layout", draft.layout);
   press("[data-palette-choice]", "data-palette-choice", draft.palette);
-  document.querySelectorAll<HTMLElement>("[data-layout]").forEach((button) => {
-    const choose = () => {
+  document.querySelectorAll<HTMLButtonElement>("button[data-layout]").forEach((button) => {
+    button.addEventListener("click", () => {
       const layout = button.dataset.layout as "halloween" | "premium" | "run";
       writeDraft({ layout });
-      press("[data-layout]", "data-layout", layout);
+      press("button[data-layout]", "data-layout", layout);
       applyDraft();
-    };
-    button.addEventListener("click", choose);
-    button.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        choose();
-      }
     });
   });
   document.querySelectorAll<HTMLButtonElement>("[data-palette-choice]").forEach((button) => {
