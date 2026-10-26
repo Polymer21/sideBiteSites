@@ -65,8 +65,21 @@ test("axe has no violations at 1440 and 390, and targets are at least 44px at 39
       for (const route of routes) {
         const response = await page.goto(`http://127.0.0.1:${port}${route}`, { waitUntil: "networkidle" });
         assert.equal(response?.status(), 200, route);
-        const results = await new AxeBuilder({ page }).analyze();
-        assert.deepEqual(results.violations, [], `${route} at ${width}\n${formatViolations(results.violations)}`);
+        if (width === 1440 && route === "/") {
+          const headerButton = await page.locator(".site-header .site-nav .btn-primary").evaluate((button) => getComputedStyle(button).backgroundColor);
+          assert.equal(headerButton, "rgb(66, 104, 73)", `root header button is ${headerButton}`);
+        }
+        const palettes = width === 1440 ? ["tripletree", "default", "premium"] : [null];
+        for (const palette of palettes) {
+          if (palette) {
+            await page.evaluate((id) => {
+              document.documentElement.dataset.palette = id;
+            }, palette);
+          }
+          const results = await new AxeBuilder({ page }).analyze();
+          const label = palette ? `${route} at ${width} palette ${palette}` : `${route} at ${width}`;
+          assert.deepEqual(results.violations, [], `${label}\n${formatViolations(results.violations)}`);
+        }
         if (width === 390) {
           const small = await page.evaluate(() => {
             const selector = 'a, button, input, select, textarea, summary, [role="button"], [role="switch"], [role="tab"]';

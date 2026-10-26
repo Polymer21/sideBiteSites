@@ -210,6 +210,7 @@ const textPairs = [
   ["--color-text-accent-on-hero", "--color-bg-hero-start"],
   ["--color-text-placeholder", "--color-bg-input"],
   ["--color-text-accent", "--color-accent-subtle"],
+  ["--color-text-accent", "--color-bg-disabled"],
   ["--color-text-primary", "--color-bg-muted"],
   ["--color-text-primary", "--color-accent-subtle"],
   ["--color-text-secondary", "--color-accent-subtle"],
@@ -255,6 +256,7 @@ test("built routes exist", async () => {
   }
   const home = await readFile(path.join(root, "dist/index.html"), "utf8");
   const pricing = await readFile(path.join(root, "dist/pricing/index.html"), "utf8");
+  assert.match(home, /data-palette="tripletree"/);
   assert.match(home, /Your event page, live in minutes/);
   assert.match(pricing, /PROVISIONAL/);
   assert.match(pricing, /\$0/);

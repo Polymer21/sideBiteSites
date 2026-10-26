@@ -35,7 +35,7 @@ Every color in the UI is a custom property. Each `data-palette` block declares t
 | `default` | Default | `#ffffff` | `#2563eb` | `#18181b` |
 | `premium` | Premium | `#f4efe6` | `#4f5b43` | `#26221d` |
 
-`:root` uses Default. The template step sets `data-palette` on `<html>`.
+The root layout sets `data-palette="tripletree"`, so launch pages stay on the green TripleTee look. Default and Premium stay selectable on the template step, which sets `data-palette` on `<html>`.
 
 ## Develop
 
