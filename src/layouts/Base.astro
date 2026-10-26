@@ -19,7 +19,11 @@ const { title, description, demo = false } = Astro.props;
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
-    {demo && <p class="demo-badge">Demo</p>}
+    {demo && (
+      <div role="region" aria-label="Demo">
+        <p class="demo-badge">Demo</p>
+      </div>
+    )}
     <slot />
   </body>
 </html>

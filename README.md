@@ -27,7 +27,15 @@ Prices, Milestone’s change-round count and feature list, and the domain live i
 
 ## Palettes
 
-Every color in the UI is a custom property. `:root` and `[data-palette="default"]` use Palette B / Theme Default from `variables-67-3406.json`. `[data-palette="tripletree"]` and `[data-palette="premium"]` repeat those values so another mode can be dropped in beside them. The template step sets `data-palette` on `<html>`.
+Every color in the UI is a custom property. Each `data-palette` block declares the same 32 color tokens as `Polymer21/sidebite2026` (`src/styles/tokens.css`).
+
+| `data-palette` | Theme | Page | Accent | Text |
+| --- | --- | --- | --- | --- |
+| `tripletree` | TripleTee | `#fcfbfa` | `#426849` | `#1a3820` |
+| `default` | Default | `#ffffff` | `#2563eb` | `#18181b` |
+| `premium` | Premium | `#f4efe6` | `#4f5b43` | `#26221d` |
+
+`:root` uses Default. The template step sets `data-palette` on `<html>`.
 
 ## Develop
 

@@ -1,75 +1,122 @@
-/* Palette B / Theme Default — values from variables-67-3406.json.
-   Other Theme modes are not in that file. Add a [data-palette="…"] block
-   to drop one in; components only read these custom properties. */
+/* 32 color tokens from Polymer21/sidebite2026 src/styles/tokens.css.
+   tripletree = Palette A TripleTee, default = Palette B Default,
+   premium = Palette C Premium. data-palette on <html> switches the set. */
 :root,
 [data-palette="default"] {
+  --color-bg-page: #ffffff;
+  --color-bg-section: #f7f7f8;
+  --color-bg-surface: #ffffff;
+  --color-bg-input: #ffffff;
+  --color-bg-muted: #e4e4e7;
+  --color-bg-footer: #18181b;
+  --color-accent: #2563eb;
+  --color-accent-subtle: #dbeafe;
+  --color-text-primary: #18181b;
+  --color-text-secondary: #52525b;
+  --color-text-on-accent: #ffffff;
+  --color-text-accent: #1d4ed8;
+  --color-border-default: #71717a;
+  --color-bg-hero-start: #dbeafe;
+  --color-accent-hover: #1d4ed8;
+  --color-text-placeholder: #52525b;
+  --color-text-error: #dc2626;
+  --color-border-input: #71717a;
+  --color-border-focus: #2563eb;
+  --color-border-error: #dc2626;
+  --color-text-on-footer: #e4e4e7;
+  --color-text-on-footer-accent: #dbeafe;
+  --color-accent-pressed: #1e40af;
+  --color-bg-disabled: #f4f4f5;
+  --color-text-disabled: #6b7280;
+  --color-border-disabled: #e4e4e7;
+  --color-text-secondary-on-surface: #52525b;
+  --color-text-accent-on-surface: #1d4ed8;
+  --color-text-on-hero: #18181b;
+  --color-text-accent-on-hero: #1d4ed8;
+  --color-text-secondary-on-hero: #52525b;
+  --color-text-on-dark-surface: #e4e4e7;
+}
+
+[data-palette="tripletree"] {
+  --color-bg-page: #fcfbfa;
+  --color-bg-section: #f7f6f3;
+  --color-bg-surface: #d8d1c4;
+  --color-bg-input: #fcfbfa;
+  --color-bg-muted: #d8d1c4;
+  --color-bg-footer: #1a3820;
   --color-accent: #426849;
   --color-accent-subtle: #f0f3f0;
   --color-text-primary: #1a3820;
   --color-text-secondary: #656e4f;
-  --color-text-accent: #426849;
   --color-text-on-accent: #fcfbfa;
-  --color-text-on-hero: #fbf8f2;
-  --color-text-secondary-on-hero: #fbf8f2;
-  --color-text-accent-on-hero: #426849;
-  --color-text-accent-on-surface: #2e4933;
-  --color-text-secondary-on-surface: #383c2b;
+  --color-text-accent: #426849;
+  --color-border-default: #656e4f;
+  --color-bg-hero-start: #f0eee9;
+  --color-accent-hover: #2e4933;
+  --color-text-placeholder: #505242;
+  --color-text-error: #b42318;
+  --color-border-input: #656e4f;
+  --color-border-focus: #426849;
+  --color-border-error: #b42318;
   --color-text-on-footer: #e8e4dd;
   --color-text-on-footer-accent: #c0c2b1;
-  --color-bg-page: #fcfbfa;
-  --color-bg-section: #f7f6f3;
-  --color-bg-muted: #d8d1c4;
-  --color-bg-surface: #d8d1c4;
+  --color-accent-pressed: #243928;
+  --color-bg-disabled: #f0eee9;
+  --color-text-disabled: #77736c;
+  --color-border-disabled: #d8d1c4;
+  --color-text-secondary-on-surface: #383c2b;
+  --color-text-accent-on-surface: #2e4933;
+  --color-text-on-hero: #1a3820;
+  --color-text-accent-on-hero: #426849;
+  --color-text-secondary-on-hero: #656e4f;
+  --color-text-on-dark-surface: #e8e4dd;
+}
+
+[data-palette="premium"] {
+  --color-bg-page: #f4efe6;
+  --color-bg-section: #ece5d8;
+  --color-bg-surface: #fbf8f2;
+  --color-bg-input: #fbf8f2;
+  --color-bg-muted: #e4dccd;
+  --color-bg-footer: #e4dccd;
+  --color-accent: #4f5b43;
+  --color-accent-subtle: #e4e6da;
+  --color-text-primary: #26221d;
+  --color-text-secondary: #5b5246;
+  --color-text-on-accent: #fbf8f2;
+  --color-text-accent: #4f5b43;
+  --color-border-default: #8a7f70;
   --color-bg-hero-start: #6f6658;
-  --color-bg-footer: #1a3820;
-  --color-border-default: #656e4f;
-  --color-border-input: #656e4f;
-  /* Frame-local fills in the marketing codegen, absent from the variable export.
-     Named here so a future mode can override them without touching components. */
-  --color-bg-thumb: #e4dccd;
-  --color-bg-module: #f0eee9;
-  --color-text-error: #b42318;
-  --color-border-error: #b42318;
+  --color-accent-hover: #3e4834;
+  --color-text-placeholder: #6e6558;
+  --color-text-error: #9a3324;
+  --color-border-input: #7c7163;
+  --color-border-focus: #4f5b43;
+  --color-border-error: #9a3324;
+  --color-text-on-footer: #26221d;
+  --color-text-on-footer-accent: #4f5b43;
+  --color-accent-pressed: #333b2b;
+  --color-bg-disabled: #e4dccd;
+  --color-text-disabled: #7a7062;
+  --color-border-disabled: #b8ae9f;
+  --color-text-secondary-on-surface: #5b5246;
+  --color-text-accent-on-surface: #4f5b43;
+  --color-text-on-hero: #fbf8f2;
+  --color-text-accent-on-hero: #ffffff;
+  --color-text-secondary-on-hero: #fbf8f2;
+  --color-text-on-dark-surface: #26221d;
+}
+
+:root {
+  --color-focus-ring: var(--color-border-focus);
+  --color-bg-thumb: var(--color-bg-muted);
+  --color-bg-module: var(--color-bg-disabled);
   --color-shadow: rgb(0 0 0 / 0.08);
   --font-display: "Bricolage Grotesque", "Gill Sans", "Trebuchet MS", sans-serif;
   --font-facts: Inter, "Segoe UI", sans-serif;
   --font-fraunces: Fraunces, "Iowan Old Style", Georgia, serif;
   --font-figtree: Figtree, Inter, sans-serif;
   --font-grotesk: "Space Grotesk", Inter, sans-serif;
-}
-
-/* Named selections from the template step. They inherit Theme Default
-   until a real mode is added beside this comment. */
-[data-palette="tripletree"],
-[data-palette="premium"] {
-  --color-accent: #426849;
-  --color-accent-subtle: #f0f3f0;
-  --color-text-primary: #1a3820;
-  --color-text-secondary: #656e4f;
-  --color-text-accent: #426849;
-  --color-text-on-accent: #fcfbfa;
-  --color-text-on-hero: #fbf8f2;
-  --color-text-secondary-on-hero: #fbf8f2;
-  --color-text-accent-on-hero: #426849;
-  --color-text-accent-on-surface: #2e4933;
-  --color-text-secondary-on-surface: #383c2b;
-  --color-text-on-footer: #e8e4dd;
-  --color-text-on-footer-accent: #c0c2b1;
-  --color-bg-page: #fcfbfa;
-  --color-bg-section: #f7f6f3;
-  --color-bg-muted: #d8d1c4;
-  --color-bg-surface: #d8d1c4;
-  --color-bg-hero-start: #6f6658;
-  --color-bg-footer: #1a3820;
-  --color-border-default: #656e4f;
-  --color-border-input: #656e4f;
-  --color-bg-thumb: #e4dccd;
-  --color-bg-module: #f0eee9;
-  --color-text-error: #b42318;
-  --color-border-error: #b42318;
-}
-
-:root {
   --d: calc(100vw / 1440);
   --space-4: calc(var(--d) * 4);
   --space-8: calc(var(--d) * 8);
@@ -167,7 +214,7 @@ h3 {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--color-focus-ring);
   outline-offset: 2px;
 }
 
@@ -176,6 +223,10 @@ h3 {
   left: var(--space-16);
   top: var(--space-16);
   transform: translateY(-150%);
+  display: inline-flex;
+  align-items: center;
+  min-width: 44px;
+  min-height: 44px;
   background: var(--color-bg-page);
   color: var(--color-text-primary);
   padding: var(--space-8) var(--space-16);
@@ -1635,6 +1686,7 @@ h3 {
 }
 
 .layout-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--space-12);
@@ -1653,8 +1705,13 @@ h3 {
   pointer-events: none;
 }
 
-.layout-card[aria-pressed="true"] {
+.layout-card:has(.layout-name[aria-pressed="true"]) {
   border: 2px solid var(--color-accent);
+}
+
+.layout-card:focus-within {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
 }
 
 .layout-thumb {
@@ -1670,12 +1727,32 @@ h3 {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-8);
+  width: 100%;
   min-width: 0;
   max-width: 100%;
+  min-height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.layout-name::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.layout-name:focus-visible {
+  outline: none;
 }
 
 .layout-card .icon-check { display: none; color: var(--color-text-accent); }
-.layout-card[aria-pressed="true"] .icon-check { display: inline-block; }
+.layout-card:has(.layout-name[aria-pressed="true"]) .icon-check { display: inline-block; }
 
 .layout-soon {
   min-height: calc(var(--d) * 140);
@@ -2034,7 +2111,7 @@ th {
   height: calc(var(--design-h) * 1px);
   transform-origin: top left;
   transform: scale(calc(100cqw / (var(--design-w) * 1px)));
-  overflow: hidden;
+  overflow: visible;
   container-type: inline-size;
   --d: 1px;
   --type-display: 96px;
@@ -2044,6 +2121,10 @@ th {
   --type-button: 18px;
   --type-body: 16px;
   --type-label: 14px;
+}
+
+.scale-canvas :focus-visible {
+  outline-offset: -2px;
 }
 
 .scale-box.is-phone .scale-canvas,
@@ -2439,6 +2520,61 @@ th {
   .tabs.mob { display: flex; }
   .progress-label { display: flex; }
   .editor-header .logo-word { display: none; }
+  .editor-header .logo {
+    min-width: 44px;
+    min-height: 44px;
+    justify-content: center;
+  }
+  .section-row .icon-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .switch {
+    width: max(44px, calc(var(--d) * 40));
+    height: max(44px, calc(var(--d) * 24));
+    background: transparent;
+  }
+  .switch::before {
+    content: "";
+    position: absolute;
+    width: calc(var(--d) * 40);
+    height: calc(var(--d) * 24);
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: var(--radius-full);
+    background: var(--color-border-default);
+  }
+  .switch[aria-checked="true"] {
+    background: transparent;
+  }
+  .switch[aria-checked="true"]::before {
+    background: var(--color-accent);
+  }
+  .switch i {
+    top: 50%;
+    left: calc(50% - (var(--d) * 20) + 2px);
+    transform: translateY(-50%);
+  }
+  .switch[aria-checked="true"] i {
+    left: auto;
+    right: calc(50% - (var(--d) * 20) + 2px);
+  }
+  .dash-main .fine a,
+  a[href^="mailto:"] {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    max-width: 100%;
+  }
+  .stepper-field {
+    height: auto;
+    min-height: calc(44px * 1.5);
+  }
+  .stepper-field button {
+    width: calc(44px * 1.3);
+    height: calc(44px * 1.3);
+  }
   .btn { min-width: 0; max-width: 100%; white-space: normal; }
   .checkout-card, .account-card, .success-card { padding: var(--space-20); }
   .look { display: flex; flex-direction: column; }

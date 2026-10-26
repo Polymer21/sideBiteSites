@@ -11,7 +11,7 @@ const { width = 1440, height = 1600, phone = false } = Astro.props;
   class:list={["scale-box", phone && "is-phone"]}
   style={`--design-w:${width};--design-h:${height}`}
 >
-  <div class="scale-canvas">
+  <div class="scale-canvas" inert aria-hidden="true">
     <slot />
   </div>
 </div>
