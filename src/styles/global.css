@@ -31,6 +31,11 @@
   --color-text-error: #b42318;
   --color-border-error: #b42318;
   --color-shadow: rgb(0 0 0 / 0.08);
+  /* HeroCorner scrim: dark at the edges, light through the middle. */
+  --color-hero-scrim-top: rgb(0 0 0 / 0.32);
+  --color-hero-scrim-high: rgb(0 0 0 / 0.04);
+  --color-hero-scrim-mid: rgb(0 0 0 / 0.1);
+  --color-hero-scrim-bottom: rgb(0 0 0 / 0.62);
   --font-display: "Bricolage Grotesque", "Gill Sans", "Trebuchet MS", sans-serif;
   --font-facts: Inter, "Segoe UI", sans-serif;
   --font-fraunces: Fraunces, "Iowan Old Style", Georgia, serif;
@@ -67,6 +72,10 @@
   --color-bg-module: #f0eee9;
   --color-text-error: #b42318;
   --color-border-error: #b42318;
+  --color-hero-scrim-top: rgb(0 0 0 / 0.32);
+  --color-hero-scrim-high: rgb(0 0 0 / 0.04);
+  --color-hero-scrim-mid: rgb(0 0 0 / 0.1);
+  --color-hero-scrim-bottom: rgb(0 0 0 / 0.62);
 }
 
 :root {
@@ -813,6 +822,9 @@ h3 {
 
 /* Template thumbnails — sized with the thumb container, not the viewport. */
 .premium-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   width: 100%;
   height: 100%;
   background: var(--color-bg-hero-start);
@@ -822,6 +834,48 @@ h3 {
   justify-content: space-between;
   padding: 2.2cqw 8.3cqw 8cqw;
   font-family: var(--font-facts);
+}
+
+.premium-hero picture {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  margin: 0;
+}
+
+.premium-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Portrait: faces sit in the upper half; keep both of them when the sides crop. */
+  object-position: center 32%;
+}
+
+/* The phone mockup covers the right of the browser sample. Bias toward the
+   couple, who stand on the right of the ridge, so they stay in the visible strip. */
+.premium-hero:not(.is-phone) img {
+  object-position: 78% 46%;
+}
+
+.hero-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    var(--color-hero-scrim-top) 0%,
+    var(--color-hero-scrim-high) 22%,
+    var(--color-hero-scrim-mid) 50%,
+    var(--color-hero-scrim-bottom) 100%
+  );
+}
+
+.premium-top,
+.premium-copy {
+  position: relative;
+  z-index: 2;
 }
 
 .premium-hero.is-phone {
@@ -863,17 +917,6 @@ h3 {
 }
 
 .premium-hero.is-phone .rsvp-link {
-  font-size: 3.6cqw;
-}
-
-.ph {
-  opacity: 0.9;
-  font-size: 1cqw;
-  font-weight: 500;
-  margin-bottom: 1.6cqw;
-}
-
-.premium-hero.is-phone .ph {
   font-size: 3.6cqw;
 }
 

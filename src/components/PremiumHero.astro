@@ -1,11 +1,42 @@
 ---
+import { Picture } from "astro:assets";
+import heroDesktop from "../assets/hero-desktop.jpg";
+import heroMobile from "../assets/hero-mobile.jpg";
+
 interface Props {
   phone?: boolean;
+  /**
+   * Marketing browser sample. Loads immediately at high priority.
+   * Leave unset on thumbs and the phone sample.
+   */
+  priority?: boolean;
+  /** Above-the-fold phone sample. Eager, without competing as high priority. */
+  eager?: boolean;
+  sizes?: string;
 }
-const { phone = false } = Astro.props;
+
+const { phone = false, priority = false, eager = false, sizes } = Astro.props;
+const photo = phone ? heroMobile : heroDesktop;
+const alt = phone
+  ? "Black-and-white portrait of Eleanor and James, her bouquet in front and his face beside hers"
+  : "Eleanor and James holding hands on a mountain ridge, her veil trailing across the grass";
+const imageSizes =
+  sizes ?? (phone ? "(max-width: 760px) 62vw, 22vw" : "(max-width: 760px) 42vw, 42vw");
 ---
 
 <div class:list={["premium-hero", phone && "is-phone"]}>
+  <Picture
+    src={photo}
+    formats={["avif", "webp"]}
+    fallbackFormat="jpg"
+    alt={alt}
+    widths={phone ? [320, 480, 640, 724] : [480, 720, 960, 1086]}
+    sizes={imageSizes}
+    quality={75}
+    priority={priority || undefined}
+    loading={priority ? undefined : eager ? "eager" : undefined}
+  />
+  <div class="hero-scrim" aria-hidden="true"></div>
   <div class="premium-top">
     <span class="mono">E &amp; J</span>
     <span class="mini-nav" aria-hidden="true">
@@ -13,8 +44,7 @@ const { phone = false } = Astro.props;
     </span>
     <span class="rsvp-link">RSVP</span>
   </div>
-  <div>
-    <p class="ph">[Image placeholder — full-bleed photo or video]</p>
+  <div class="premium-copy">
     <p class="names">Eleanor &amp; James</p>
     <p class="meta">Saturday, 12 June 2027 · The Orchard House, Hudson Valley</p>
     <div class="pill-arrow">

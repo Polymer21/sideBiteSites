@@ -143,6 +143,11 @@ test("built routes exist", async () => {
   const pricing = await readFile(path.join(built, "pricing/index.html"), "utf8");
   const footer = await readFile(path.join(root, "src/components/SiteFooter.astro"), "utf8");
   assert.match(home, /Your event page, live in minutes/);
+  assert.doesNotMatch(home, /Image placeholder/);
+  assert.match(home, /<source[^>]+type="image\/avif"/);
+  assert.match(home, /<source[^>]+type="image\/webp"/);
+  assert.match(home, /fetchpriority="high"/);
+  assert.equal((home.match(/fetchpriority="high"/g) || []).length, 1);
   assert.match(home, /© 2026 Sidebite Sites, LLC/);
   assert.match(footer, /© 2026 Sidebite Sites, LLC/);
   assert.doesNotMatch(footer, /href=/);
@@ -174,6 +179,10 @@ test("built pages do not scroll horizontally, and note text stays half the viewp
     ".css": "text/css",
     ".js": "text/javascript",
     ".svg": "image/svg+xml",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".webp": "image/webp",
+    ".avif": "image/avif",
     ".woff2": "font/woff2",
   };
   const server = createServer(async (req, res) => {
