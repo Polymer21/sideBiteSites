@@ -61,19 +61,19 @@ const steps = [
             <span class="url">{eventLink("eleanor-and-james")}</span>
           </div>
           <div class="thumb" style="height:min(calc(var(--d) * 361), 48svh);border-radius:0">
-            <PremiumHero />
+            <PremiumHero priority sizes="(min-width: 761px) 42vw, 42vw" />
           </div>
         </div>
         <div class="phone">
           <div class="phone-screen">
-            <PremiumHero phone />
+            <PremiumHero phone eager />
           </div>
         </div>
       </div>
       <div class="phone-only mob" aria-hidden="true">
         <div class="phone">
           <div class="phone-screen">
-            <PremiumHero phone />
+            <PremiumHero phone eager />
           </div>
         </div>
       </div>
@@ -113,7 +113,7 @@ const steps = [
       </div>
       <div class="gallery">
         <article class="card template-card">
-          <div class="thumb" aria-hidden="true"><PremiumHero /></div>
+          <div class="thumb" aria-hidden="true"><PremiumHero sizes="(max-width: 760px) 90vw, 28vw" /></div>
           <div class="split">
             <h3 class="facts-title">Premium</h3>
             <span class="pill">Milestone</span>
