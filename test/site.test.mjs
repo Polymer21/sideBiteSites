@@ -1,10 +1,16 @@
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
+import { existsSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 
 const root = path.resolve(import.meta.dirname, "..");
+
+function staticRoot() {
+  const client = path.join(root, "dist/client");
+  return existsSync(client) ? client : path.join(root, "dist");
+}
 
 async function files(dir, acc = []) {
   const entries = await readdir(dir, { withFileTypes: true });
@@ -16,24 +22,30 @@ async function files(dir, acc = []) {
   return acc;
 }
 
-test("provisional content is the single source for prices and domain", async () => {
-  const provisional = await readFile(path.join(root, "src/content/provisional.ts"), "utf8");
-  assert.match(provisional, /sidebitesites\.com/);
-  for (const price of ["0", "50", "150", "300", "5", "40"]) {
-    assert.match(provisional, new RegExp(`:\\s*${price}\\b`));
+test("plan catalog is the single source for prices and domain", async () => {
+  const plans = await readFile(path.join(root, "src/content/plans.ts"), "utf8");
+  assert.match(plans, /sidebitesites\.com/);
+  assert.match(plans, /trialDays:\s*7/);
+  for (const price of ["50", "150", "300"]) {
+    assert.match(plans, new RegExp(`:\\s*${price}\\b`));
   }
-  assert.match(provisional, /milestone:\s*5/);
+  assert.match(plans, /milestone:\s*5/);
+  assert.doesNotMatch(plans, /free:\s*0/);
+  assert.doesNotMatch(plans, /PENDING/);
   const pages = (await files(path.join(root, "src/pages"))).filter((file) => file.endsWith(".astro"));
   for (const file of pages) {
     const text = await readFile(file, "utf8");
     assert.doesNotMatch(text, /sidebite\.com/, `${file} hardcodes a domain`);
     assert.doesNotMatch(text, /\$\d/, `${file} hardcodes a price`);
+    assert.doesNotMatch(text, /PENDING TIM|PROVISIONAL/, `${file} still has a dev note`);
   }
 });
 
 test("components do not hardcode colors", async () => {
   const source = (await files(path.join(root, "src"))).filter((file) => /\.(astro|ts)$/.test(file));
   for (const file of source) {
+    // Network and wallet marks use required brand colors. UI chrome does not.
+    if (file.endsWith(`${path.sep}CardMarks.astro`)) continue;
     const text = await readFile(file, "utf8");
     assert.doesNotMatch(text, /#[0-9a-fA-F]{3,8}\b/, `${file} hardcodes a color`);
   }
@@ -107,31 +119,51 @@ test("built routes exist", async () => {
     "demo/published/index.html",
     "demo/dashboard/index.html",
     "e/demo/index.html",
+    "checkout/index.html",
+    "checkout/gather/index.html",
+    "checkout/celebrate/index.html",
+    "checkout/milestone/index.html",
+    "checkout/success/index.html",
   ];
+  const built = staticRoot();
   for (const route of routes) {
-    const html = await readFile(path.join(root, "dist", route), "utf8");
+    const html = await readFile(path.join(built, route), "utf8");
     assert.match(html, /<main[\s>]/, route);
     if (route.startsWith("demo/") || route.startsWith("e/")) {
       assert.match(html, /Demo/, route);
     }
   }
-  const withDomain = ["index.html", "demo/preview/index.html", "demo/published/index.html", "demo/dashboard/index.html", "e/demo/index.html"];
+  const withDomain = ["index.html", "demo/published/index.html", "demo/dashboard/index.html", "e/demo/index.html"];
   for (const route of withDomain) {
-    const html = await readFile(path.join(root, "dist", route), "utf8");
+    const html = await readFile(path.join(built, route), "utf8");
     assert.match(html, /sidebitesites\.com/, route);
   }
-  const home = await readFile(path.join(root, "dist/index.html"), "utf8");
-  const pricing = await readFile(path.join(root, "dist/pricing/index.html"), "utf8");
+  const home = await readFile(path.join(built, "index.html"), "utf8");
+  const pricing = await readFile(path.join(built, "pricing/index.html"), "utf8");
+  const footer = await readFile(path.join(root, "src/components/SiteFooter.astro"), "utf8");
   assert.match(home, /Your event page, live in minutes/);
-  assert.match(pricing, /PROVISIONAL/);
-  assert.match(pricing, /\$0/);
+  assert.match(home, /© 2026 Sidebite Sites, LLC/);
+  assert.match(footer, /© 2026 Sidebite Sites, LLC/);
+  assert.doesNotMatch(footer, /href=/);
+  assert.doesNotMatch(pricing, /PROVISIONAL|PENDING|Free draft|\$0/);
+  assert.match(pricing, /_astro\/[^"]+\.css/);
+  assert.match(pricing, /\$50/);
+  assert.match(pricing, /\$150/);
   assert.match(pricing, /\$300/);
+  assert.match(pricing, /per month/);
+  assert.match(pricing, /7-day/);
+  for (const label of ["Visa", "Mastercard", "American Express", "Discover", "Apple Pay", "Google Pay"]) {
+    assert.match(pricing, new RegExp(`aria-label="${label}"`));
+  }
   assert.match(pricing, /5 change rounds/);
+  assert.equal(existsSync(path.join(root, "src/pages/terms.astro")), false);
+  assert.equal(existsSync(path.join(root, "src/pages/privacy.astro")), false);
+  assert.equal(existsSync(path.join(root, "src/pages/legal.astro")), false);
 });
 
 test("built pages do not scroll horizontally, and note text stays half the viewport at 390", async () => {
   const { chromium } = await import("playwright");
-  const dist = path.join(root, "dist");
+  const dist = staticRoot();
   const types = {
     ".html": "text/html; charset=utf-8",
     ".css": "text/css",
@@ -170,9 +202,15 @@ test("built pages do not scroll horizontally, and note text stays half the viewp
     "/demo/published/",
     "/demo/dashboard/",
     "/e/demo/",
+    "/checkout/",
+    "/checkout/gather/",
+    "/checkout/celebrate/",
+    "/checkout/milestone/",
+    "/checkout/success/",
   ];
-  const browser = await chromium.launch();
+  let browser;
   try {
+    browser = await chromium.launch();
     for (const width of [390, 768, 1920]) {
       const page = await browser.newPage({ viewport: { width, height: 900 } });
       for (const route of routes) {
@@ -196,7 +234,7 @@ test("built pages do not scroll horizontally, and note text stays half the viewp
       await page.close();
     }
   } finally {
-    await browser.close();
+    await browser?.close();
     await new Promise((resolve) => server.close(resolve));
   }
 });

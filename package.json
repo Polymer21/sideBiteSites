@@ -7,10 +7,13 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "test": "node --test test/site.test.mjs"
+    "test": "node --experimental-strip-types --test test/*.mjs"
   },
   "dependencies": {
-    "astro": "^5.14.1"
+    "@astrojs/vercel": "^9.0.5",
+    "@supabase/supabase-js": "^2.118.0",
+    "astro": "^5.14.1",
+    "stripe": "^23.1.0"
   },
   "devDependencies": {
     "playwright": "1.55.0"

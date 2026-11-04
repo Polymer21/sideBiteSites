@@ -1,7 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
-import Provisional from "../../components/Provisional.astro";
-import { eventLink, keepLivePrice, money, provisional } from "../../content/provisional";
+import { eventLink, monthlyPrice, plansCatalog } from "../../content/plans";
 import { defaultDraft, guests, upgradePrompts } from "../../content/copy";
 import "../../styles/global.css";
 ---
@@ -30,7 +29,6 @@ import "../../styles/global.css";
           <a class="btn btn-primary" href="#prompts">Message guests</a>
         </div>
       </header>
-      <Provisional title="Message guests: updates and reminders from you, Milestone only" body="Dev note: needs legal sign-off before launch; include unsubscribe links and a privacy notice." />
       <section class="stats" aria-label="Snapshot">
         <article class="stat"><span class="fine">Going</span><b>42</b></article>
         <article class="stat"><span class="fine">Maybe</span><b>9</b></article>
@@ -40,15 +38,15 @@ import "../../styles/global.css";
       <section class="card hosting" style="padding:var(--space-20)">
         <div class="split">
           <h2 class="facts-title">Hosting</h2>
-          <span class="pill">Live until {defaultDraft.hostingShort}</span>
+          <span class="pill">Active</span>
         </div>
-        <p class="muted">Included until 1 month after your event. Keep it live after that for {keepLivePrice()}.</p>
-        <div class="split">
-          <p>Keep it live</p>
-          <button class="switch" type="button" role="switch" aria-checked="false" aria-label="Keep it live" data-keep-live>
-            <i></i>
-          </button>
-        </div>
+        <p class="muted">The page stays live while the monthly subscription is active. Update the card or cancel in the billing portal.</p>
+        <form method="post" action="/api/stripe/portal" style="display:flex;flex-direction:column;gap:var(--space-12);align-items:stretch">
+          <label class="field">Account email
+            <input type="email" name="email" autocomplete="email" required />
+          </label>
+          <button class="btn btn-secondary" type="submit">Manage billing</button>
+        </form>
         <fieldset style="border:0;padding:0;margin-top:var(--space-12)">
           <legend class="fine">Takedown warnings by</legend>
           <div class="chip-row" data-segment>
@@ -85,7 +83,7 @@ import "../../styles/global.css";
       </section>
       <section id="prompts" aria-labelledby="upgrade-label">
         <h2 id="upgrade-label" class="facts-title">Upgrade prompts</h2>
-        <p class="fine">Prompt rules · prices {money(provisional.prices.gather)} / {money(provisional.prices.celebrate)} / {money(provisional.prices.milestone)}</p>
+        <p class="fine">Prompt rules · {monthlyPrice(plansCatalog.prices.gather)} / {monthlyPrice(plansCatalog.prices.celebrate)} / {monthlyPrice(plansCatalog.prices.milestone)}</p>
         <div class="prompts">
           {
             upgradePrompts.map((prompt) => (

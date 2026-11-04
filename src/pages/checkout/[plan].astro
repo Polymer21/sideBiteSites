@@ -1,0 +1,31 @@
+---
+import Base from "../../layouts/Base.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import CheckoutEntry from "../../components/CheckoutEntry.astro";
+import { planById, plans } from "../../content/plans";
+import "../../styles/global.css";
+
+export function getStaticPaths() {
+  const ids = plans.flatMap((plan) => [plan.id, plan.stripePlan]);
+  return [...new Set(ids)].map((plan) => ({ params: { plan }, props: { plan } }));
+}
+
+const selected = planById(Astro.props.plan);
+if (!selected) throw new Error("Unknown plan");
+---
+
+<Base
+  title={`${selected.name} checkout — Sidebite`}
+  description={`Start the ${selected.name} plan with a 7-day free trial. A card is required. Stripe takes the payment.`}
+>
+  <header class="flow-header">
+    <a class="logo" href="/">
+      <span class="logo-mark" aria-hidden="true"></span>
+      <span class="logo-word">Sidebite</span>
+    </a>
+    <a class="btn btn-link" href="/pricing" style="margin-left:auto">All plans</a>
+    <span class="pill">Secure checkout</span>
+  </header>
+  <CheckoutEntry planId={selected.id} />
+  <SiteFooter />
+</Base>

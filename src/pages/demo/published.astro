@@ -1,7 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
-import Provisional from "../../components/Provisional.astro";
-import { eventLink, keepLivePrice } from "../../content/provisional";
+import { eventLink } from "../../content/plans";
 import { defaultDraft } from "../../content/copy";
 import "../../styles/global.css";
 const link = eventLink(defaultDraft.slug);
@@ -35,15 +34,10 @@ const link = eventLink(defaultDraft.slug);
         </div>
         <a class="btn btn-link" href="/e/demo">Download QR</a>
       </section>
-      <div class="warn">
-        <p class="pill pill-solid">DECISION NEEDED</p>
-        <h2 class="facts-title">Domain name</h2>
-        <Provisional title="URL pattern" body={`${eventLink("{slug}")} is provisional.`} />
-      </div>
       <section class="callout">
-        <p class="strong">Live until {defaultDraft.hostingUntil}</p>
-        <p>Celebrate · paid</p>
-        <p class="muted">Hosting is included until a month after your event. Then keep it live for {keepLivePrice()}, or let it go on hold (restore any time within 12 months).</p>
+        <p class="strong">Live on Celebrate</p>
+        <p>Monthly plan</p>
+        <p class="muted">The page stays live while the subscription is active. Update the card or cancel in the billing portal.</p>
         <fieldset style="border:0;padding:0">
           <legend class="strong">Warn me before takedown by</legend>
           <div class="segmented" id="warn-by">

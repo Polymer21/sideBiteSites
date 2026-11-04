@@ -801,18 +801,14 @@ h3 {
   display: flex;
   justify-content: center;
   padding: var(--space-32);
-  gap: var(--space-4);
+  color: var(--color-text-on-footer);
   font-weight: 600;
   font-size: var(--type-label);
   line-height: 1.4;
 }
 
-.site-footer span:first-child {
-  color: var(--color-text-on-footer);
-}
-
-.site-footer span:last-child {
-  color: var(--color-text-on-footer-accent);
+.site-footer p {
+  margin: 0;
 }
 
 /* Template thumbnails — sized with the thumb container, not the viewport. */
@@ -1083,7 +1079,7 @@ h3 {
 
 .tiers {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-20);
   align-items: stretch;
 }
@@ -1136,6 +1132,49 @@ h3 {
 .features .ok { color: var(--color-text-accent); }
 .features .no { color: var(--color-text-secondary); }
 .tier .btn { margin-top: 0; align-self: stretch; }
+
+.tier-cta {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  min-width: 0;
+}
+
+.pay-marks {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8);
+  margin: 0;
+  padding: 0;
+  max-width: 100%;
+}
+
+.pay-marks li {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-page);
+  border: 1px solid var(--color-bg-muted);
+  border-radius: var(--radius-sm);
+  padding: var(--space-4);
+  min-height: clamp(1.75rem, 2.4vw, 2.25rem);
+  max-width: 100%;
+}
+
+.pay-mark {
+  display: block;
+  height: clamp(0.85rem, 1.25vw, 1.15rem);
+  width: auto;
+  max-width: calc(var(--d) * 52);
+}
+
+.pay-mark-wide {
+  max-width: calc(var(--d) * 68);
+}
 
 .billing h2 {
   font-family: var(--font-facts);

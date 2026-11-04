@@ -1,0 +1,41 @@
+---
+import Base from "../../layouts/Base.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import { plansCatalog } from "../../content/plans";
+import "../../styles/global.css";
+---
+
+<Base
+  title="Trial started — Sidebite"
+  description="Your free trial has started. Build your event page next. Manage the card in the billing portal."
+>
+  <header class="flow-header">
+    <a class="logo" href="/">
+      <span class="logo-mark" aria-hidden="true"></span>
+      <span class="logo-word">Sidebite</span>
+    </a>
+  </header>
+  <main id="main" class="flow">
+    <div class="flow-narrow">
+      <header>
+        <h1 class="h2">Your {plansCatalog.trialDays}-day trial has started</h1>
+        <p class="lead">Your card is on file. You won’t be charged until the trial ends. Next, build the page.</p>
+      </header>
+      <section class="success-card">
+        <a class="btn btn-primary" href="/demo/event-type">Start building</a>
+        <form method="post" action="/api/stripe/portal">
+          <input type="hidden" name="session_id" id="session-id" value="" />
+          <button class="btn btn-secondary" type="submit">Manage billing</button>
+        </form>
+        <p class="fine">Cancel or update the card any time in the billing portal.</p>
+      </section>
+    </div>
+  </main>
+  <SiteFooter />
+</Base>
+<script>
+  const params = new URLSearchParams(location.search);
+  const sessionId = params.get("session_id");
+  const input = document.getElementById("session-id") as HTMLInputElement | null;
+  if (input && sessionId && !sessionId.includes("{")) input.value = sessionId;
+</script>

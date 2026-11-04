@@ -5,18 +5,17 @@ import SiteFooter from "../components/SiteFooter.astro";
 import Icon from "../components/Icon.astro";
 import PremiumHero from "../components/PremiumHero.astro";
 import ModuleThumb from "../components/ModuleThumb.astro";
-import Provisional from "../components/Provisional.astro";
 import FaqList from "../components/FaqList.astro";
-import { eventLink, homePriceHeadline, priceSummary } from "../content/provisional";
+import { eventLink, homePriceHeadline, priceSummary } from "../content/plans";
 import "../styles/global.css";
 
 const steps = [
   {
     n: "1",
     icon: "calendar",
-    title: "Pick your event + template",
-    body: "Tell us what you’re hosting and we suggest a layout and palette that fit.",
-    mobile: "We suggest a layout and palette.",
+    title: "Start a plan",
+    body: "Choose Gather, Celebrate, or Milestone. A card starts the 7-day trial, then you build.",
+    mobile: "A card starts the 7-day trial.",
   },
   {
     n: "2",
@@ -50,10 +49,10 @@ const steps = [
         </p>
         <p class="lead mob">Pick a template, drop in your details and share one link.</p>
         <div class="row" style="flex-wrap:wrap;width:100%">
-          <a class="btn btn-primary btn-stack" href="/demo/event-type">Create your event page</a>
+          <a class="btn btn-primary btn-stack" href="/pricing">Start your 7-day trial</a>
           <a class="btn btn-secondary btn-stack" href="#templates">See templates</a>
         </div>
-        <p class="fine desk">Free to start · No code · Works on every phone</p>
+        <p class="fine desk">7-day free trial · Card required · Works on every phone</p>
       </div>
       <div class="hero-visual desk" aria-hidden="true">
         <div class="browser">
@@ -141,18 +140,14 @@ const steps = [
         <article class="soon"><h3 class="strong">Nightlife</h3><p class="fine">Coming Oct 28</p></article>
         <article class="soon"><h3 class="strong">Wedding classic</h3><p class="fine">Coming Oct 30</p></article>
       </div>
-      <div style="margin-top:var(--space-24)">
-        <Provisional title="Premium template: Milestone only" body="" />
-      </div>
+      <p class="fine" style="margin-top:var(--space-24)">The Premium template is included with Milestone.</p>
     </section>
 
     <section class="price-teaser" aria-labelledby="price-title">
       <p class="kicker desk">PRICING</p>
       <h2 id="price-title" class="h2 desk">{homePriceHeadline()}</h2>
-      <h2 class="h2 mob">One-time price per event. Hosting until a month after.</h2>
-      <div class="note-wrap">
-        <Provisional title="Pricing" body={priceSummary()} />
-      </div>
+      <h2 class="h2 mob">Monthly plans. 7-day trial, card required.</h2>
+      <p class="muted">{priceSummary()}</p>
       <a class="btn btn-secondary compare-plans" href="/pricing">Compare plans</a>
     </section>
 
@@ -164,7 +159,7 @@ const steps = [
     <section class="closing desk" aria-labelledby="close-title">
       <h2 id="close-title" class="poster">Your guests are waiting for the link.</h2>
       <p class="lead">Build it in minutes. Share it tonight.</p>
-      <a class="btn btn-primary" href="/demo/event-type">Create your event page</a>
+      <a class="btn btn-primary" href="/pricing">Start your 7-day trial</a>
     </section>
   </main>
   <SiteFooter />

@@ -2,7 +2,6 @@
 import Base from "../../layouts/Base.astro";
 import EventPage from "../../components/EventPage.astro";
 import ScaleBox from "../../components/ScaleBox.astro";
-import Provisional from "../../components/Provisional.astro";
 import "../../styles/global.css";
 ---
 
@@ -19,7 +18,7 @@ import "../../styles/global.css";
       <form class="account-card" id="account-form" action="/pricing">
         <h1 class="h2">Save your page</h1>
         <p class="lead">Create an account to keep your draft, publish it and see RSVPs as they arrive.</p>
-        <Provisional title="Sign-in: email magic link + Continue with Google" body="Guests never sign in. They RSVP straight from the link." />
+        <p class="muted">Guests never sign in. They RSVP straight from the link.</p>
         <a class="btn btn-secondary btn-block" href="/pricing">Continue with Google</a>
         <p class="or">or</p>
         <label class="field">Email
