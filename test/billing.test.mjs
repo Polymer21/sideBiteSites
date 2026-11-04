@@ -111,6 +111,18 @@ test("checkout session is a subscription trial that always collects a card", () 
   assert.equal(params.success_url, "https://sidebitesites.com/checkout/success?session_id={CHECKOUT_SESSION_ID}");
   assert.equal(params.cancel_url, "https://sidebitesites.com/pricing?checkout=canceled");
   assert.equal(normalizeEmail("not-an-email"), "invalid");
+  const free = checkoutSessionParams({
+    priceId: config.prices.starter,
+    plan: "free",
+    siteUrl: config.siteUrl,
+    email: null,
+  });
+  assert.equal(free.mode, "subscription");
+  assert.equal(free.payment_method_collection, "always");
+  assert.equal(free.subscription_data.trial_period_days, 7);
+  assert.equal(free.line_items[0].price, prices.starter);
+  assert.equal(free.metadata.plan, "free");
+  assert.equal(free.subscription_data.metadata.plan, "free");
 });
 
 test("webhook updates are idempotent and map subscription status", async () => {
@@ -126,6 +138,20 @@ test("webhook updates are idempotent and map subscription status", async () => {
   };
   const row = subscriptionRow(subscription, prices, now);
   assert.equal(row.plan, "celebrate");
+  const trialEnd = Math.floor(new Date("2026-11-11T00:00:00.000Z").getTime() / 1000);
+  const freeTrial = subscriptionRow(
+    { ...subscription, status: "trialing", trial_end: trialEnd, metadata: { plan: "free" }, items: { data: [{ price: { id: prices.starter } }] } },
+    prices,
+    now,
+  );
+  assert.equal(freeTrial?.plan, "free");
+  assert.equal(freeTrial?.stripe_price_id, prices.starter);
+  const converted = subscriptionRow(
+    { ...subscription, status: "active", trial_end: trialEnd, metadata: { plan: "free" }, items: { data: [{ price: { id: prices.starter } }] } },
+    prices,
+    new Date("2026-11-12T00:00:00.000Z"),
+  );
+  assert.equal(converted?.plan, "gather");
   assert.equal(row.status, "trialing");
   assert.equal(row.stripe_price_id, prices.pro);
   assert.equal(planFromPriceId(prices.premium, prices), "premium");

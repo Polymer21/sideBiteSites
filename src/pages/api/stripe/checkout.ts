@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import Stripe from "stripe";
-import { planById } from "../../../content/plans.ts";
+import { isPaidPlan, planById } from "../../../content/plans.ts";
 import {
   checkoutSessionParams,
   messageResponse,
@@ -19,7 +19,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     const fields = await readRequestFields(request);
     const plan = planById(fields.plan);
-    if (!plan) return messageResponse(request, 400, "Unknown plan", "Choose Gather, Celebrate, or Milestone.");
+    if (!plan) return messageResponse(request, 400, "Unknown plan", "Choose Free, Gather, Celebrate, or Milestone.");
 
     const email = normalizeEmail(fields.email);
     if (email === "invalid") return messageResponse(request, 400, "Check the email", "Enter a valid email or leave it blank.");
@@ -29,11 +29,16 @@ export const POST: APIRoute = async ({ request }) => {
     // and refuse to create a Checkout Session without it. Do not ship /terms,
     // /privacy, or /legal until then.
 
+    // SIGNUP / BUILD FLOW HOOK
+    // Checkout returns to /checkout/success, which links to /demo/event-type.
+    // Replace that link with the real signup and build flow when it exists.
+
+    const stripePlan = isPaidPlan(plan) ? plan.stripePlan : "starter";
     const stripe = new Stripe(config.stripeSecretKey);
     const session = await stripe.checkout.sessions.create(
       checkoutSessionParams({
-        priceId: config.prices[plan.stripePlan],
-        plan: plan.stripePlan,
+        priceId: config.prices[stripePlan],
+        plan: plan.id === "free" ? "free" : stripePlan,
         siteUrl: config.siteUrl,
         email,
       }),

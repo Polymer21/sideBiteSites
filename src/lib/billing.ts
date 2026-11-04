@@ -204,7 +204,8 @@ export function subscriptionRow(
   const priceId = idOf(item?.price as IdLike);
   const fromPrice = planFromPriceId(priceId, prices);
   const fromMeta = planById(sub.metadata?.plan);
-  const plan = fromMeta?.id ?? plans.find((entry) => entry.stripePlan === fromPrice)?.id ?? null;
+  const fromPricePlan = plans.find((entry) => entry.stripePlan === fromPrice)?.id ?? null;
+  const plan = entitlementPlan(fromMeta?.id ?? null, fromPricePlan, sub, now);
   return {
     stripe_subscription_id: stripeSubscriptionId,
     stripe_customer_id: stripeCustomerId,
@@ -216,6 +217,19 @@ export function subscriptionRow(
     cancel_at_period_end: Boolean(sub.cancel_at_period_end),
     updated_at: now.toISOString(),
   };
+}
+
+/** Free is a Gather subscription. It stays Free while the trial is open, then becomes Gather. */
+function entitlementPlan(
+  metadataPlan: string | null,
+  pricePlan: string | null,
+  sub: LooseSubscription,
+  now: Date,
+): string | null {
+  if (metadataPlan !== "free") return metadataPlan ?? pricePlan;
+  const trialOpen = typeof sub.trial_end === "number" && sub.trial_end * 1000 > now.getTime();
+  const stillFree = sub.status === "trialing" || sub.status === "incomplete" || (sub.status === "canceled" && trialOpen);
+  return stillFree ? "free" : "gather";
 }
 
 type LooseInvoice = {
@@ -294,7 +308,7 @@ export async function processBillingEvent(
 
 export function checkoutSessionParams(input: {
   priceId: string;
-  plan: StripePlan;
+  plan: StripePlan | "free";
   siteUrl: string;
   email: string | null;
 }) {

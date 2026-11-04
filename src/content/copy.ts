@@ -1,4 +1,4 @@
-import { monthlyPrice, plansCatalog } from "./plans";
+import { money, monthlyPrice, plansCatalog } from "./plans";
 
 export const marketingFaq = [
   {
@@ -22,7 +22,7 @@ export const marketingFaq = [
   {
     id: "cost",
     q: "What does it cost?",
-    a: `Gather ${monthlyPrice(plansCatalog.prices.gather)}, Celebrate ${monthlyPrice(plansCatalog.prices.celebrate)}, and Milestone ${monthlyPrice(plansCatalog.prices.milestone)}. Every plan starts with a ${plansCatalog.trialDays}-day free trial and a card on file. There is no free plan.`,
+    a: `Free is ${money(plansCatalog.prices.free)} for ${plansCatalog.trialDays} days, then ${money(plansCatalog.prices.gather)}/month as Gather. Card required. It renews automatically unless you cancel before day ${plansCatalog.trialDays}. Celebrate is ${monthlyPrice(plansCatalog.prices.celebrate)} and Milestone is ${monthlyPrice(plansCatalog.prices.milestone)}, each with a ${plansCatalog.trialDays}-day trial.`,
     mobile: true,
   },
 ] as const;

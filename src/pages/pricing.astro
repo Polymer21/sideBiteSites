@@ -6,6 +6,7 @@ import Icon from "../components/Icon.astro";
 import CardMarks from "../components/CardMarks.astro";
 import {
   celebrateFeatures,
+  freeFeatures,
   gatherFeatures,
   milestoneFeatures,
   money,
@@ -15,6 +16,7 @@ import {
 import "../styles/global.css";
 
 const featureList = {
+  free: freeFeatures,
   gather: gatherFeatures.map((label) => ({ ok: true, label })),
   celebrate: celebrateFeatures.map((label) => ({ ok: true, label })),
   milestone: milestoneFeatures.map((label) => ({ ok: true, label })),
@@ -23,27 +25,29 @@ const featureList = {
 
 <Base
   title="Pricing — Sidebite"
-  description="Monthly plans with a 7-day free trial. A card is required at signup. Gather, Celebrate, and Milestone."
+  description="Start free for a week, or pick a monthly plan. Free renews automatically as Gather. Gather, Celebrate, and Milestone include a 7-day trial."
 >
   <SiteHeader current="pricing" />
   <main id="main" class="pricing">
     <header class="stack">
       <p class="kicker">PRICING</p>
-      <h1 class="h2">Monthly plans. One week free.</h1>
+      <h1 class="h2">Start free for a week, or pick a monthly plan.</h1>
       <p class="lead">
-        No free plan. A card starts the {plansCatalog.trialDays}-day trial, then the plan bills every month. Checkout comes before you build the page.
+        Free is a basic page for {plansCatalog.trialDays} days, then it renews automatically as Gather at {money(plansCatalog.prices.gather)}/month. Card required. Cancel anytime before day {plansCatalog.trialDays}. Or pick a monthly plan.
       </p>
       <p class="fine" id="checkout-status" hidden>Checkout canceled. You can start a trial whenever you’re ready.</p>
     </header>
 
     <section class="billing" aria-label="How billing works">
       <div>
-        <h2>{plansCatalog.trialDays}-day free trial</h2>
-        <p class="muted">Card required at signup. You are not charged today.</p>
+        <h2>Start free for a week</h2>
+        <p class="muted">
+          {money(plansCatalog.prices.free)} for {plansCatalog.trialDays} days on a basic page, then {money(plansCatalog.prices.gather)}/month as Gather. Card required. Cancel anytime before day {plansCatalog.trialDays}. Renews automatically.
+        </p>
       </div>
       <div>
-        <h2>Then billed monthly</h2>
-        <p class="muted">Gather, Celebrate, or Milestone. Cancel any time.</p>
+        <h2>Or a monthly plan</h2>
+        <p class="muted">Gather, Celebrate, or Milestone. A card starts the {plansCatalog.trialDays}-day trial.</p>
       </div>
       <div>
         <h2>Pay before you build</h2>
@@ -72,13 +76,20 @@ const featureList = {
             <ul class="features">
               {featureList[plan.id].map((feature) => (
                 <li>
-                  <Icon name="check" class="ok" />
-                  <span>{feature.label}</span>
+                  <Icon name={feature.ok ? "check" : "minus"} class={feature.ok ? "ok" : "no"} />
+                  <span class={feature.ok ? "" : "muted"}>{feature.label}</span>
                 </li>
               ))}
             </ul>
             <div class="tier-cta">
               <CardMarks />
+              {plan.id === "free" && <p class="muted">Renews automatically as Gather.</p>}
+              <!--
+                SIGNUP / BUILD FLOW HOOK
+                Start free opens Stripe Checkout for the Gather price with a 7-day trial.
+                After success, /checkout/success links to /demo/event-type as the build placeholder.
+                Replace that link with the real signup and build flow when it exists.
+              -->
               <a class:list={["btn", "btn-block", plan.variant === "primary" ? "btn-primary" : "btn-secondary"]} href={`/checkout/${plan.id}`}>
                 {plan.cta}
               </a>

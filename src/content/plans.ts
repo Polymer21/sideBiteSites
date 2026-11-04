@@ -1,13 +1,16 @@
 /**
- * Live Sidebite plans. There is no free tier.
- * Every plan is a monthly subscription with a 7-day trial and a card on file.
+ * Live Sidebite plans.
+ * Free starts a Gather subscription ($50/month) with a 7-day trial.
+ * The page stays basic during those 7 days, then the card is charged and it becomes Gather.
+ * Gather, Celebrate, and Milestone stay monthly subscriptions with a 7-day trial.
  * Stripe Price IDs are env vars, not stored here:
- * Gather → STRIPE_PRICE_STARTER, Celebrate → STRIPE_PRICE_PRO, Milestone → STRIPE_PRICE_PREMIUM.
+ * Free and Gather → STRIPE_PRICE_STARTER, Celebrate → STRIPE_PRICE_PRO, Milestone → STRIPE_PRICE_PREMIUM.
  */
 export const plansCatalog = {
   domain: "sidebitesites.com",
   trialDays: 7,
   prices: {
+    free: 0,
     gather: 50,
     celebrate: 150,
     milestone: 300,
@@ -19,6 +22,17 @@ export const plansCatalog = {
 } as const;
 
 export const plans = [
+  {
+    id: "free",
+    stripePlan: null,
+    name: "Free",
+    price: plansCatalog.prices.free,
+    cadence: "for one week",
+    blurb: `${money(plansCatalog.prices.free)} for ${plansCatalog.trialDays} days, then ${money(plansCatalog.prices.gather)}/month (Gather). Card required. Cancel anytime before day ${plansCatalog.trialDays}.`,
+    cta: "Start free",
+    variant: "secondary",
+    popular: false,
+  },
   {
     id: "gather",
     stripePlan: "starter",
@@ -55,7 +69,13 @@ export const plans = [
 ] as const;
 
 export type PlanId = (typeof plans)[number]["id"];
-export type StripePlan = (typeof plans)[number]["stripePlan"];
+export type StripePlan = "starter" | "pro" | "premium";
+
+export function isPaidPlan<T extends { stripePlan: StripePlan | null }>(
+  plan: T,
+): plan is T & { stripePlan: StripePlan } {
+  return plan.stripePlan !== null;
+}
 
 export function money(amount: number): string {
   return `$${amount}`;
@@ -95,6 +115,15 @@ export const celebrateFeatures = [
   `${plansCatalog.rounds.celebrate} rounds of changes we make for you`,
 ] as const;
 
+export const freeFeatures = [
+  { ok: true, label: "Basic event page for 7 days" },
+  { ok: true, label: "Sidebite badge" },
+  { ok: true, label: "Renews automatically as Gather" },
+  { ok: false, label: "No RSVP list or RSVP form" },
+  { ok: false, label: "No customization" },
+  { ok: false, label: "No extras or upgrades" },
+] as const;
+
 export const gatherFeatures = [
   "Event page",
   "Share link",
@@ -103,10 +132,10 @@ export const gatherFeatures = [
 ] as const;
 
 export function priceSummary(): string {
-  const { gather, celebrate, milestone } = plansCatalog.prices;
-  return `Gather ${monthlyPrice(gather)} · Celebrate ${monthlyPrice(celebrate)} · Milestone ${monthlyPrice(milestone)}. ${plansCatalog.trialDays}-day free trial, card required. No free plan.`;
+  const { free, gather, celebrate, milestone } = plansCatalog.prices;
+  return `Free ${money(free)} for ${plansCatalog.trialDays} days, then Gather ${money(gather)}/month. Celebrate ${monthlyPrice(celebrate)} · Milestone ${monthlyPrice(milestone)}. Free renews automatically as Gather unless you cancel. Card required.`;
 }
 
 export function homePriceHeadline(): string {
-  return `Monthly plans from ${monthlyPrice(plansCatalog.prices.gather)}. A card starts the ${plansCatalog.trialDays}-day free trial.`;
+  return "Start free for a week, or pick a monthly plan.";
 }

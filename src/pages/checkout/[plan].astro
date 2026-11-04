@@ -6,7 +6,7 @@ import { planById, plans } from "../../content/plans";
 import "../../styles/global.css";
 
 export function getStaticPaths() {
-  const ids = plans.flatMap((plan) => [plan.id, plan.stripePlan]);
+  const ids = plans.flatMap((plan) => (plan.stripePlan ? [plan.id, plan.stripePlan] : [plan.id]));
   return [...new Set(ids)].map((plan) => ({ params: { plan }, props: { plan } }));
 }
 

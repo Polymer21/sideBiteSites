@@ -20,6 +20,7 @@ create table if not exists public.subscriptions (
   stripe_subscription_id text not null unique,
   stripe_customer_id text not null,
   stripe_price_id text,
+  -- free while the Gather trial is open; gather once that subscription is billing.
   plan text,
   status text not null,
   trial_end timestamptz,

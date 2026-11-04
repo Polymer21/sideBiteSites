@@ -1,11 +1,12 @@
 ---
 import CardMarks from "./CardMarks.astro";
-import { monthlyPrice, planById, plans, plansCatalog } from "../content/plans";
+import { money, monthlyPrice, planById, plans, plansCatalog } from "../content/plans";
 
 interface Props {
   planId?: string;
 }
-const selected = planById(Astro.props.planId) ?? plans[1];
+const selected = planById(Astro.props.planId) ?? plans.find((plan) => plan.popular) ?? plans[0];
+const free = selected.id === "free";
 const catalog = plans.map((plan) => ({
   id: plan.id,
   stripePlan: plan.stripePlan,
@@ -25,8 +26,11 @@ const catalog = plans.map((plan) => ({
     <form class="checkout-card" id="pay-form" method="post" action="/api/stripe/checkout">
       <h1 class="h2">Checkout</h1>
       <p class="muted">
-        A card starts your {plansCatalog.trialDays}-day free trial. You won’t be charged today. After that, the plan
-        bills monthly until you cancel. Payment happens before any build.
+        {
+          free
+            ? `A card is required. ${selected.blurb} It renews automatically as Gather unless you cancel before day ${plansCatalog.trialDays}. During the free week the page stays basic. Payment happens before any build.`
+            : `A card starts your ${plansCatalog.trialDays}-day free trial. You won’t be charged today. After that, the plan bills monthly until you cancel. Payment happens before any build.`
+        }
       </p>
       <label class="field">Email
         <input type="email" name="email" autocomplete="email" placeholder="you@example.com" />
@@ -48,11 +52,11 @@ const catalog = plans.map((plan) => ({
     <aside class="summary" aria-label="Order summary">
       <h2 class="facts-title">Order summary</h2>
       <div class="summary-row">
-        <span id="tier-label">{selected.name} · monthly</span>
-        <strong id="tier-price">{monthlyPrice(selected.price)}</strong>
+        <span id="tier-label">{free ? "Free · then Gather" : `${selected.name} · monthly`}</span>
+        <strong id="tier-price">{free ? money(selected.price) : monthlyPrice(selected.price)}</strong>
       </div>
       <div class="summary-row">
-        <span>{plansCatalog.trialDays}-day free trial</span>
+        <span>{plansCatalog.trialDays}-day {free ? "basic page" : "free trial"}</span>
         <span>Card required</span>
       </div>
       <div class="summary-row">
@@ -61,11 +65,14 @@ const catalog = plans.map((plan) => ({
       </div>
       <div class="summary-row">
         <span class="strong">Due today</span>
-        <strong id="tier-total">Nothing during the trial</strong>
+        <strong id="tier-total">{free ? "No charge today" : "Nothing during the trial"}</strong>
       </div>
       <p class="fine" id="after">
-        When the trial ends, {selected.name} continues at {monthlyPrice(selected.price)}. Cancel or update the card in
-        the billing portal.
+        {
+          free
+            ? `Renews automatically as Gather at ${money(plansCatalog.prices.gather)}/month on day ${plansCatalog.trialDays} unless you cancel. Cancel anytime before then in the billing portal.`
+            : `When the trial ends, ${selected.name} continues at ${monthlyPrice(selected.price)}. Cancel or update the card in the billing portal.`
+        }
       </p>
     </aside>
   </div>
@@ -90,11 +97,20 @@ const catalog = plans.map((plan) => ({
     input.value = current.id;
     const label = document.getElementById("tier-label");
     const price = document.getElementById("tier-price");
+    const total = document.getElementById("tier-total");
     const after = document.getElementById("after");
-    const amount = "$" + current.price + "/mo";
-    if (label) label.textContent = current.name + " · monthly";
+    const freePlan = current.id === "free";
+    const gather = catalog.find((plan) => plan.id === "gather");
+    const amount = freePlan ? "$" + current.price : "$" + current.price + "/mo";
+    if (label) label.textContent = freePlan ? "Free · then Gather" : current.name + " · monthly";
     if (price) price.textContent = amount;
-    if (after) {
+    if (total) total.textContent = freePlan ? "No charge today" : "Nothing during the trial";
+    if (after && freePlan && gather) {
+      after.textContent =
+        "Renews automatically as Gather at $" +
+        gather.price +
+        "/month on day 7 unless you cancel. Cancel anytime before then in the billing portal.";
+    } else if (after) {
       after.textContent =
         "When the trial ends, " + current.name + " continues at " + amount + ". Cancel or update the card in the billing portal.";
     }

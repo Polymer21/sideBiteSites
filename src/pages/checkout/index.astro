@@ -2,13 +2,13 @@
 import Base from "../../layouts/Base.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
 import CardMarks from "../../components/CardMarks.astro";
-import { monthlyPrice, plans, plansCatalog } from "../../content/plans";
+import { money, monthlyPrice, plans, plansCatalog } from "../../content/plans";
 import "../../styles/global.css";
 ---
 
 <Base
   title="Checkout — Sidebite"
-  description="Choose a monthly plan. Every plan starts with a 7-day free trial and a card on file."
+  description="Start free for a week, or choose a monthly plan. A card is required. Free renews automatically as Gather."
 >
   <header class="flow-header">
     <a class="logo" href="/">
@@ -21,7 +21,7 @@ import "../../styles/global.css";
     <header class="stack">
       <h1 class="h2">Choose a plan to start</h1>
       <p class="lead">
-        {plansCatalog.trialDays}-day free trial. Card required. You won’t be charged today, and the page build starts after checkout.
+        {plansCatalog.trialDays}-day trial. Card required. Free renews automatically as Gather at {money(plansCatalog.prices.gather)}/month unless you cancel. The page build starts after checkout.
       </p>
       <CardMarks />
     </header>
@@ -31,7 +31,8 @@ import "../../styles/global.css";
           <article class:list={["tier", plan.popular && "tier-pop"]}>
             <h2 class="facts-title">{plan.name}</h2>
             <p>
-              <span class="price">{monthlyPrice(plan.price)}</span>
+              <span class="price">{plan.id === "free" ? money(plan.price) : monthlyPrice(plan.price)}</span>
+              {plan.id === "free" && <span class="muted">{plan.blurb} Renews automatically as Gather.</span>}
             </p>
             <a class="btn btn-primary btn-block" href={`/checkout/${plan.id}`}>
               {plan.cta}

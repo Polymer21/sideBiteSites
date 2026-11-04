@@ -1,7 +1,7 @@
 ---
 import Base from "../../layouts/Base.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
-import { plansCatalog } from "../../content/plans";
+import { money, plansCatalog } from "../../content/plans";
 import "../../styles/global.css";
 ---
 
@@ -19,9 +19,16 @@ import "../../styles/global.css";
     <div class="flow-narrow">
       <header>
         <h1 class="h2">Your {plansCatalog.trialDays}-day trial has started</h1>
-        <p class="lead">Your card is on file. You won’t be charged until the trial ends. Next, build the page.</p>
+        <p class="lead" id="success-paid">Your card is on file. You won’t be charged until the trial ends. Next, build the page.</p>
+        <p class="lead" id="success-free" hidden>
+          Your card is on file. For {plansCatalog.trialDays} days the page stays basic. Then it renews automatically as Gather at {money(plansCatalog.prices.gather)}/month unless you cancel before day {plansCatalog.trialDays}.
+        </p>
       </header>
       <section class="success-card">
+        <!--
+          SIGNUP / BUILD FLOW HOOK
+          This link is the build placeholder. Replace it with the real signup and build flow when it exists.
+        -->
         <a class="btn btn-primary" href="/demo/event-type">Start building</a>
         <form method="post" action="/api/stripe/portal">
           <input type="hidden" name="session_id" id="session-id" value="" />
@@ -38,4 +45,8 @@ import "../../styles/global.css";
   const sessionId = params.get("session_id");
   const input = document.getElementById("session-id") as HTMLInputElement | null;
   if (input && sessionId && !sessionId.includes("{")) input.value = sessionId;
+  if (params.get("plan") === "free") {
+    document.getElementById("success-paid")?.setAttribute("hidden", "");
+    document.getElementById("success-free")?.removeAttribute("hidden");
+  }
 </script>

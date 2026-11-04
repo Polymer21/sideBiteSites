@@ -1,6 +1,6 @@
 # Sidebite
 
-Marketing site and clickable host-flow mockups for Sidebite. Pages are static Astro HTML. Stripe Checkout, the billing portal, and the webhook are Vercel serverless routes (`export const prerender = false`). There is no free plan: Gather, Celebrate, and Milestone are monthly, with a 7-day trial and a card required before the page is built.
+Marketing site and clickable host-flow mockups for Sidebite. Pages are static Astro HTML. Stripe Checkout, the billing portal, and the webhook are Vercel serverless routes (`export const prerender = false`). Free starts the Gather subscription: $0 for 7 days on a basic page, then it renews automatically at $50/month. Celebrate and Milestone stay monthly, each with a 7-day trial and a card required before the page is built.
 
 ## Pages
 

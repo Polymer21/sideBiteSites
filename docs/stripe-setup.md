@@ -1,9 +1,12 @@
 # Stripe billing setup
 
-Sidebite bills three monthly plans. There is no free plan. Checkout starts a 7-day trial and always collects a card (`trial_period_days=7`, `payment_method_collection=always`). The trial is not a $0 Stripe Price.
+Sidebite has a Free start and three monthly plans. Checkout is always `mode=subscription`, with `trial_period_days=7` and `payment_method_collection=always`. There is no $0 Stripe Price.
+
+Free uses the Gather price (`STRIPE_PRICE_STARTER`, $50/month). For the first 7 days the page stays basic: no RSVP list, no customization, no upgrades, Sidebite badge on. On day 7 the card is charged $50 and the plan becomes Gather. It renews automatically unless the customer cancels before day 7.
 
 | Plan | Amount | Env var |
 | --- | --- | --- |
+| Free, then Gather | $0 for 7 days, then $50 / month | `STRIPE_PRICE_STARTER` |
 | Gather | $50 / month | `STRIPE_PRICE_STARTER` |
 | Celebrate | $150 / month | `STRIPE_PRICE_PRO` |
 | Milestone | $300 / month | `STRIPE_PRICE_PREMIUM` |
@@ -30,7 +33,7 @@ In the Stripe Dashboard (test mode first, then live):
 3. Create **Celebrate** the same way at `150.00` USD monthly. Copy that Price ID into `STRIPE_PRICE_PRO`.
 4. Create **Milestone** at `300.00` USD monthly. Copy that Price ID into `STRIPE_PRICE_PREMIUM`.
 
-Do not add a free price. The 7-day trial is set when the site creates the Checkout Session.
+Do not add a free price. Free and Gather both use the Gather Price ID. The site sets the 7-day trial on the Checkout Session. Free sends `metadata.plan=free`. While that subscription is `trialing`, the webhook stores plan `free`. When Stripe marks it `active` and charges the card, the webhook stores plan `gather`.
 
 ## 2. Customer portal
 
@@ -97,10 +100,10 @@ Locally, copy `.env.example` to `.env` and fill the same names. Blank values are
 
 ## 7. What the customer does
 
-1. Pricing → **Start 7-day trial** → `/checkout/<plan>`.
+1. Pricing → **Start free** or **Start 7-day trial** → `/checkout/<plan>`.
 2. The checkout page posts to `/api/stripe/checkout`.
-3. Stripe Checkout collects the card, starts the 7-day trial, and returns to `/checkout/success?session_id=...`.
-4. **Start building** goes to the page editor. Payment happens before that build.
-5. **Manage billing** opens the Stripe customer portal.
+3. Stripe Checkout collects the card and starts the 7-day trial. Free is the Gather price and renews automatically as Gather at $50/month unless the customer cancels before day 7.
+4. **Start building** goes to the page editor. Checkout happens before that build.
+5. **Manage billing** opens the Stripe customer portal, where they can cancel before day 7.
 
 Terms and privacy pages are not part of this flow. There is a comment marked `TERMS ACCEPTANCE HOOK` on the checkout form and in `src/pages/api/stripe/checkout.ts` for when counsel approves that step.

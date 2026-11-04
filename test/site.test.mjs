@@ -30,7 +30,7 @@ test("plan catalog is the single source for prices and domain", async () => {
     assert.match(plans, new RegExp(`:\\s*${price}\\b`));
   }
   assert.match(plans, /milestone:\s*5/);
-  assert.doesNotMatch(plans, /free:\s*0/);
+  assert.match(plans, /free:\s*0/);
   assert.doesNotMatch(plans, /PENDING/);
   const pages = (await files(path.join(root, "src/pages"))).filter((file) => file.endsWith(".astro"));
   for (const file of pages) {
@@ -120,6 +120,7 @@ test("built routes exist", async () => {
     "demo/dashboard/index.html",
     "e/demo/index.html",
     "checkout/index.html",
+    "checkout/free/index.html",
     "checkout/gather/index.html",
     "checkout/celebrate/index.html",
     "checkout/milestone/index.html",
@@ -145,7 +146,11 @@ test("built routes exist", async () => {
   assert.match(home, /© 2026 Sidebite Sites, LLC/);
   assert.match(footer, /© 2026 Sidebite Sites, LLC/);
   assert.doesNotMatch(footer, /href=/);
-  assert.doesNotMatch(pricing, /PROVISIONAL|PENDING|Free draft|\$0/);
+  assert.doesNotMatch(pricing, /PROVISIONAL|PENDING|Free draft|No free plan/);
+  assert.match(pricing, /\$0 for 7 days, then \$50\/month \(Gather\)/);
+  assert.match(pricing, /Card required/);
+  assert.match(pricing, /Cancel anytime before day 7/);
+  assert.match(pricing, /Renews automatically as Gather/);
   assert.match(pricing, /_astro\/[^"]+\.css/);
   assert.match(pricing, /\$50/);
   assert.match(pricing, /\$150/);
