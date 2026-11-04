@@ -1,0 +1,118 @@
+---
+import CardMarks from "./CardMarks.astro";
+import { money, monthlyPrice, planById, plans, plansCatalog } from "../content/plans";
+
+interface Props {
+  planId?: string;
+}
+const selected = planById(Astro.props.planId) ?? plans.find((plan) => plan.popular) ?? plans[0];
+const free = selected.id === "free";
+const catalog = plans.map((plan) => ({
+  id: plan.id,
+  stripePlan: plan.stripePlan,
+  name: plan.name,
+  price: plan.price,
+}));
+---
+
+<main id="main" class="flow">
+  <div
+    class="two"
+    id="checkout"
+    data-plans={JSON.stringify(catalog)}
+    data-trial={plansCatalog.trialDays}
+    data-selected={selected.id}
+  >
+    <form class="checkout-card" id="pay-form" method="post" action="/api/stripe/checkout">
+      <h1 class="h2">Checkout</h1>
+      <p class="muted">
+        {
+          free
+            ? `A card is required. ${selected.blurb} It renews automatically as Gather unless you cancel before day ${plansCatalog.trialDays}. During the free week the page stays basic. Payment happens before any build.`
+            : `A card starts your ${plansCatalog.trialDays}-day free trial. You won’t be charged today. After that, the plan bills monthly until you cancel. Payment happens before any build.`
+        }
+      </p>
+      <label class="field">Email
+        <input type="email" name="email" autocomplete="email" placeholder="you@example.com" />
+      </label>
+      <input type="hidden" name="plan" id="plan-input" value={selected.id} />
+      <!--
+        TERMS ACCEPTANCE HOOK
+        Counsel has not approved terms or a privacy policy. Do not add a checkbox,
+        /terms, /privacy, /legal, or footer links here until that approval lands.
+        When it does, require acceptance on this form before POST /api/stripe/checkout.
+      -->
+      <section aria-labelledby="pay-label">
+        <h2 id="pay-label" class="facts-title">Payment</h2>
+        <p class="muted">You’ll finish on Stripe’s secure page. We never see your card number.</p>
+        <CardMarks />
+      </section>
+      <button class="btn btn-primary" type="submit">Continue to secure payment</button>
+    </form>
+    <aside class="summary" aria-label="Order summary">
+      <h2 class="facts-title">Order summary</h2>
+      <div class="summary-row">
+        <span id="tier-label">{free ? "Free · then Gather" : `${selected.name} · monthly`}</span>
+        <strong id="tier-price">{free ? money(selected.price) : monthlyPrice(selected.price)}</strong>
+      </div>
+      <div class="summary-row">
+        <span>{plansCatalog.trialDays}-day {free ? "basic page" : "free trial"}</span>
+        <span>Card required</span>
+      </div>
+      <div class="summary-row">
+        <span>Tax</span>
+        <span>Calculated at Stripe</span>
+      </div>
+      <div class="summary-row">
+        <span class="strong">Due today</span>
+        <strong id="tier-total">{free ? "No charge today" : "Nothing during the trial"}</strong>
+      </div>
+      <p class="fine" id="after">
+        {
+          free
+            ? `Renews automatically as Gather at ${money(plansCatalog.prices.gather)}/month on day ${plansCatalog.trialDays} unless you cancel. Cancel anytime before then in the billing portal.`
+            : `When the trial ends, ${selected.name} continues at ${monthlyPrice(selected.price)}. Cancel or update the card in the billing portal.`
+        }
+      </p>
+    </aside>
+  </div>
+</main>
+<script>
+  const root = document.getElementById("checkout");
+  const catalog = JSON.parse(root?.dataset.plans || "[]") as Array<{
+    id: string;
+    stripePlan: string;
+    name: string;
+    price: number;
+  }>;
+  const params = new URLSearchParams(location.search);
+  const requested = params.get("plan") || params.get("tier");
+  const input = document.getElementById("plan-input") as HTMLInputElement | null;
+  const current = requested
+    ? catalog.find((plan) => plan.id === requested || plan.stripePlan === requested)
+    : catalog.find((plan) => plan.id === root?.dataset.selected);
+  if (!current || !input) {
+    /* keep the server-rendered plan */
+  } else {
+    input.value = current.id;
+    const label = document.getElementById("tier-label");
+    const price = document.getElementById("tier-price");
+    const total = document.getElementById("tier-total");
+    const after = document.getElementById("after");
+    const freePlan = current.id === "free";
+    const gather = catalog.find((plan) => plan.id === "gather");
+    const amount = freePlan ? "$" + current.price : "$" + current.price + "/mo";
+    if (label) label.textContent = freePlan ? "Free · then Gather" : current.name + " · monthly";
+    if (price) price.textContent = amount;
+    if (total) total.textContent = freePlan ? "No charge today" : "Nothing during the trial";
+    if (after && freePlan && gather) {
+      after.textContent =
+        "Renews automatically as Gather at $" +
+        gather.price +
+        "/month on day 7 unless you cancel. Cancel anytime before then in the billing portal.";
+    } else if (after) {
+      after.textContent =
+        "When the trial ends, " + current.name + " continues at " + amount + ". Cancel or update the card in the billing portal.";
+    }
+  }
+</script>

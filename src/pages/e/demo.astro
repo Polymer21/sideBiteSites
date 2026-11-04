@@ -2,8 +2,7 @@
 import Base from "../../layouts/Base.astro";
 import ScaleBox from "../../components/ScaleBox.astro";
 import GuestPhone from "../../components/GuestPhone.astro";
-import Decision from "../../components/Decision.astro";
-import { domainDecision, eventLink } from "../../content/provisional";
+import { eventLink } from "../../content/plans";
 import "../../styles/global.css";
 
 const phones = [
@@ -34,7 +33,6 @@ const phones = [
         ))
       }
     </div>
-    <Decision title="Domain name" body={domainDecision()} />
   </main>
 </Base>
 <script>

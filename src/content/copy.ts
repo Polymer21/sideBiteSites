@@ -1,9 +1,4 @@
-import {
-  keepLivePrice,
-  money,
-  priceDifference,
-  provisional,
-} from "./provisional";
+import { money, monthlyPrice, plansCatalog } from "./plans";
 
 export const marketingFaq = [
   {
@@ -15,19 +10,19 @@ export const marketingFaq = [
   {
     id: "after-publish",
     q: "Can I change things after publishing?",
-    a: `Yes. Celebrate includes ${provisional.rounds.celebrate} rounds of changes we make for you. Milestone includes ${provisional.rounds.milestone} change rounds. That count may change.`,
+    a: `Yes. Celebrate includes ${plansCatalog.rounds.celebrate} rounds of changes we make for you. Milestone includes ${plansCatalog.rounds.milestone} change rounds.`,
     mobile: true,
   },
   {
     id: "own-domain",
     q: "Can I use my own domain?",
-    a: `Your own web address is on Milestone. Other plans use a ${provisional.domain} link. The domain in links is still provisional.`,
+    a: `Your own web address is on Milestone. Other plans use a ${plansCatalog.domain} link.`,
     mobile: false,
   },
   {
     id: "cost",
     q: "What does it cost?",
-    a: `Free draft ${money(provisional.prices.free)}, Gather ${money(provisional.prices.gather)}, Celebrate ${money(provisional.prices.celebrate)}, Milestone ${money(provisional.prices.milestone)}, one-time per event. Hosting is included until a month after your event. After that, Keep it live is optional: ${keepLivePrice()}.`,
+    a: `Free is ${money(plansCatalog.prices.free)} for ${plansCatalog.trialDays} days, then ${money(plansCatalog.prices.gather)}/month as Gather. Card required. It renews automatically unless you cancel before day ${plansCatalog.trialDays}. Celebrate is ${monthlyPrice(plansCatalog.prices.celebrate)} and Milestone is ${monthlyPrice(plansCatalog.prices.milestone)}, each with a ${plansCatalog.trialDays}-day trial.`,
     mobile: true,
   },
 ] as const;
@@ -132,7 +127,7 @@ export const defaultDraft = {
   button: "RSVP",
   layout: "halloween" as "halloween" | "premium" | "run",
   palette: "tripletree" as "tripletree" | "default" | "premium",
-  tier: "celebrate" as "free" | "gather" | "celebrate" | "milestone",
+  tier: "celebrate" as "gather" | "celebrate" | "milestone",
   hidden: ["gallery"] as SectionId[],
   slug: "spooky-soiree",
   hostingUntil: "30 Nov 2026",
@@ -141,43 +136,43 @@ export const defaultDraft = {
 
 export const upgradePrompts = [
   {
-    n: "1 · Shared a draft",
-    title: "Ready to share? Publish with Gather",
-    body: `Event page, share link and RSVPs. Shared drafts show a watermark.`,
-    price: `Gather ${money(provisional.prices.gather)}`,
-    primary: "Publish with Gather",
-    primaryHref: "/demo/checkout?tier=gather",
+    n: "1 · Ready to publish",
+    title: "Publish with Gather",
+    body: "Event page, share link and RSVPs. A card starts the 7-day trial.",
+    price: `Gather ${monthlyPrice(plansCatalog.prices.gather)}`,
+    primary: "Start Gather trial",
+    primaryHref: "/checkout/gather",
   },
   {
     n: "2 · Locked feature",
     title: "Custom colors are on Celebrate",
-    body: `Colors, fonts, extra sections, no badge and change requests. Pay only the difference: ${priceDifference(provisional.prices.gather, provisional.prices.celebrate)}.`,
-    extra: `Milestone unlocks the Premium template, your own domain, reminders, guest list download and a page password.`,
-    price: `Celebrate ${money(provisional.prices.celebrate)}`,
-    primary: "Upgrade to Celebrate",
-    primaryHref: "/demo/checkout?tier=celebrate",
+    body: "Colors, fonts, extra sections, no badge and change requests. Switch plans any time and Stripe prorates the month.",
+    extra: "Milestone unlocks the Premium template, your own domain, reminders, guest list download and a page password.",
+    price: `Celebrate ${monthlyPrice(plansCatalog.prices.celebrate)}`,
+    primary: "Start Celebrate trial",
+    primaryHref: "/checkout/celebrate",
   },
   {
     n: "3 · 3rd change round",
     title: "That’s your 3rd change round",
-    body: `Milestone includes ${provisional.rounds.milestone} change rounds* and the Premium template. Pay only the difference: ${priceDifference(provisional.prices.celebrate, provisional.prices.milestone)}.`,
-    price: `Milestone ${money(provisional.prices.milestone)}`,
-    primary: "Upgrade to Milestone",
-    primaryHref: "/demo/checkout?tier=milestone",
+    body: `Milestone includes ${plansCatalog.rounds.milestone} change rounds and the Premium template.`,
+    price: `Milestone ${monthlyPrice(plansCatalog.prices.milestone)}`,
+    primary: "Start Milestone trial",
+    primaryHref: "/checkout/milestone",
   },
   {
-    n: "4 · Takedown warning · 7 days and 1 day",
-    title: "Your page goes offline in 7 days",
-    body: `Keep it live for ${keepLivePrice()}, or download your guest list first. We also warn you by email, text or both.`,
-    primary: "Keep it live",
-    primaryHref: "/demo/checkout?tier=celebrate",
+    n: "4 · Trial ending",
+    title: "Your trial is ending",
+    body: "Your card on file is charged when the trial ends. Update the card or cancel in the billing portal.",
+    primary: "Manage billing",
+    primaryHref: "/checkout/success",
     secondary: "Download guest list",
   },
   {
     n: "5 · Page on hold",
     title: "Bring your page back",
-    body: `Your page is on hold. Restore it any time within 12 months with Keep it live: ${keepLivePrice()}.`,
-    primary: "Bring it back",
-    primaryHref: "/demo/checkout?tier=celebrate",
+    body: "Your page is on hold because the subscription isn’t active. Start a plan to publish again.",
+    primary: "See plans",
+    primaryHref: "/pricing",
   },
 ] as const;

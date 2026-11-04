@@ -1,0 +1,52 @@
+---
+import Base from "../../layouts/Base.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import { money, plansCatalog } from "../../content/plans";
+import "../../styles/global.css";
+---
+
+<Base
+  title="Trial started — Sidebite"
+  description="Your free trial has started. Build your event page next. Manage the card in the billing portal."
+>
+  <header class="flow-header">
+    <a class="logo" href="/">
+      <span class="logo-mark" aria-hidden="true"></span>
+      <span class="logo-word">Sidebite</span>
+    </a>
+  </header>
+  <main id="main" class="flow">
+    <div class="flow-narrow">
+      <header>
+        <h1 class="h2">Your {plansCatalog.trialDays}-day trial has started</h1>
+        <p class="lead" id="success-paid">Your card is on file. You won’t be charged until the trial ends. Next, build the page.</p>
+        <p class="lead" id="success-free" hidden>
+          Your card is on file. For {plansCatalog.trialDays} days the page stays basic. Then it renews automatically as Gather at {money(plansCatalog.prices.gather)}/month unless you cancel before day {plansCatalog.trialDays}.
+        </p>
+      </header>
+      <section class="success-card">
+        <!--
+          SIGNUP / BUILD FLOW HOOK
+          This link is the build placeholder. Replace it with the real signup and build flow when it exists.
+        -->
+        <a class="btn btn-primary" href="/demo/event-type">Start building</a>
+        <form method="post" action="/api/stripe/portal">
+          <input type="hidden" name="session_id" id="session-id" value="" />
+          <button class="btn btn-secondary" type="submit">Manage billing</button>
+        </form>
+        <p class="fine">Cancel or update the card any time in the billing portal.</p>
+      </section>
+    </div>
+  </main>
+  <SiteFooter />
+</Base>
+<script>
+  const params = new URLSearchParams(location.search);
+  const sessionId = params.get("session_id");
+  const input = document.getElementById("session-id") as HTMLInputElement | null;
+  if (input && sessionId && !sessionId.includes("{")) input.value = sessionId;
+  if (params.get("plan") === "free") {
+    document.getElementById("success-paid")?.setAttribute("hidden", "");
+    document.getElementById("success-free")?.removeAttribute("hidden");
+  }
+</script>
